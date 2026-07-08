@@ -285,11 +285,18 @@ This setup works well for:
 - Netlify
 - any static host for the frontend
 - Sanity-hosted Studio deployment for CMS
+- Dokploy via Docker + Nginx
 
 Frontend build output is generated into:
 
 ```text
 dist/
+```
+
+For Dokploy deployment, see:
+
+```text
+DOKPLOY_DEPLOYMENT.md
 ```
 
 ---
@@ -309,4 +316,3 @@ Built with a stack centered around:
 ## License
 
 Add your preferred license here if this project will be shared publicly.
-

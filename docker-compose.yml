@@ -1,0 +1,11 @@
+services:
+  wibi-portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_SANITY_PROJECT_ID: ${VITE_SANITY_PROJECT_ID:-}
+        VITE_SANITY_DATASET: ${VITE_SANITY_DATASET:-production}
+        VITE_SANITY_API_VERSION: ${VITE_SANITY_API_VERSION:-2024-10-01}
+    ports:
+      - "8080:80"
