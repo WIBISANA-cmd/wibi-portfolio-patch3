@@ -5,6 +5,7 @@ export default defineCliConfig({
     projectId: process.env.SANITY_STUDIO_PROJECT_ID,
     dataset: process.env.SANITY_STUDIO_DATASET,
   },
+  studioHost: process.env.SANITY_STUDIO_HOSTNAME,
   // Studio runs on its own port so it can coexist with the Vite app (5173).
   server: { port: 3333 },
 });

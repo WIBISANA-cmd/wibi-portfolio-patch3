@@ -129,8 +129,10 @@ VITE_SANITY_API_VERSION=2024-10-01
 
 SANITY_STUDIO_PROJECT_ID=your-project-id
 SANITY_STUDIO_DATASET=production
+SANITY_STUDIO_HOSTNAME=your-studio-hostname
 
 SANITY_API_TOKEN=your-write-token
+SANITY_AUTH_TOKEN=your-deploy-token
 ```
 
 ### 3. Run the frontend
@@ -156,6 +158,7 @@ npm run preview       # Preview production build
 npm run studio        # Start Sanity Studio locally
 npm run studio:build  # Build Sanity Studio
 npm run studio:deploy # Deploy Sanity Studio
+npm run studio:deploy:prod # Deploy Studio non-interactive to configured host
 npm run seed          # Seed structured demo content into Sanity
 ```
 
@@ -241,7 +244,9 @@ http://localhost:5173
 | `VITE_SANITY_API_VERSION` | Sanity API version for browser queries |
 | `SANITY_STUDIO_PROJECT_ID` | Project ID used by Sanity Studio |
 | `SANITY_STUDIO_DATASET` | Dataset used by Studio |
+| `SANITY_STUDIO_HOSTNAME` | Hostname for production Studio deployment (`<name>.sanity.studio`) |
 | `SANITY_API_TOKEN` | Write token used only for scripts like seeding |
+| `SANITY_AUTH_TOKEN` | Deploy token for non-interactive `sanity deploy` in CI/CD |
 
 ---
 

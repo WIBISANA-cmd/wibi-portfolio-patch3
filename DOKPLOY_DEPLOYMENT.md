@@ -1,7 +1,11 @@
-# Deploy ke Dokploy
+# Deploy Production
 
-Project ini adalah frontend **Vite + React** yang hasil akhirnya berupa file statis di `dist/`.
-Karena itu deployment yang paling stabil di Dokploy adalah memakai `Dockerfile` ini dan menjalankannya dengan `nginx`.
+Project ini punya dua target production yang terpisah:
+
+- frontend portfolio: deploy ke Dokploy memakai `Dockerfile` + `nginx`
+- Sanity Studio admin: deploy ke Sanity Hosting memakai `sanity deploy`
+
+Frontend dan Studio memang sengaja dipisah supaya website public tetap kecil dan stabil, sementara panel admin tetap memakai hosting resmi Sanity.
 
 ## File yang dipakai
 
@@ -20,12 +24,31 @@ VITE_SANITY_DATASET=production
 VITE_SANITY_API_VERSION=2024-10-01
 ```
 
+Untuk Sanity Studio production:
+
+```env
+SANITY_STUDIO_PROJECT_ID=your-project-id
+SANITY_STUDIO_DATASET=production
+SANITY_STUDIO_HOSTNAME=your-studio-hostname
+```
+
+Untuk deploy Studio non-interaktif di CI/CD:
+
+```env
+SANITY_AUTH_TOKEN=your-deploy-token
+```
+
 Catatan penting:
 
 - Variabel `VITE_*` dibaca saat proses `vite build`, bukan saat container sudah running.
 - Jadi di Dokploy, variabel ini perlu tersedia sebagai **Build Args** atau build-time environment.
 - `SANITY_API_TOKEN` tidak diperlukan untuk menjalankan frontend production ini.
-- `SANITY_STUDIO_*` hanya diperlukan kalau Anda ingin menjalankan atau deploy Sanity Studio secara terpisah.
+- `SANITY_STUDIO_*` dipakai oleh `sanity.config.ts` dan `sanity.cli.ts` untuk dev, build, dan deploy Studio.
+- `SANITY_STUDIO_HOSTNAME` akan menghasilkan URL Studio production:
+
+```text
+https://<SANITY_STUDIO_HOSTNAME>.sanity.studio
+```
 
 ## Uji lokal dengan Docker
 
@@ -57,9 +80,40 @@ VITE_SANITY_API_VERSION=2024-10-01
 
 6. Deploy.
 
+## Deploy Sanity Studio ke production
+
+1. Pastikan akun Sanity Anda punya akses project yang benar.
+2. Jika deploy dari local, login dulu:
+
+```bash
+npx sanity login
+```
+
+3. Pastikan environment berikut sudah terisi:
+
+```env
+SANITY_STUDIO_PROJECT_ID=your-project-id
+SANITY_STUDIO_DATASET=production
+SANITY_STUDIO_HOSTNAME=your-studio-hostname
+```
+
+4. Deploy Studio:
+
+```bash
+npm run studio:deploy:prod
+```
+
+5. Setelah sukses, admin production akan tersedia di:
+
+```text
+https://your-studio-hostname.sanity.studio
+```
+
+Jika ingin deploy lewat CI/CD atau server tanpa login interaktif, set `SANITY_AUTH_TOKEN` dan jalankan command yang sama.
+
 ## Domain dan CORS Sanity
 
-Setelah domain Dokploy aktif, tambahkan domain tersebut ke Sanity CORS Origins:
+Setelah frontend Dokploy aktif, tambahkan domain frontend tersebut ke Sanity CORS Origins:
 
 ```text
 https://your-domain.com
@@ -67,13 +121,16 @@ https://your-domain.com
 
 Kalau memakai subdomain Dokploy preview, tambahkan juga subdomain preview yang benar-benar dipakai.
 
-## Tentang Sanity Studio
+Tambahkan juga origin Studio production:
 
-Repo ini memang berisi konfigurasi Sanity Studio, tetapi frontend utama tidak membutuhkan Studio untuk ikut hidup di container yang sama.
+```text
+https://your-studio-hostname.sanity.studio
+```
 
-Rekomendasi:
+## Alur production yang direkomendasikan
 
-- deploy frontend ini di Dokploy memakai `Dockerfile`
-- deploy Sanity Studio secara terpisah dengan `npm run studio:deploy`
-
-Dengan begitu container production tetap kecil, cepat build, dan lebih mudah dirawat.
+1. Deploy frontend ke Dokploy dari `Dockerfile`
+2. Pasang domain `portfolio.wibee.web.id` ke app Dokploy
+3. Deploy Sanity Studio ke `https://<hostname>.sanity.studio`
+4. Login ke Studio production untuk mengelola konten
+5. Pastikan domain frontend dan Studio sudah masuk ke Sanity CORS Origins
