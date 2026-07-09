@@ -8,6 +8,12 @@ const dataset = (import.meta.env.VITE_SANITY_DATASET as string) || 'production';
 const apiVersion =
   (import.meta.env.VITE_SANITY_API_VERSION as string) || '2024-10-01';
 
+export const sanityConfig = {
+  projectId,
+  dataset,
+  apiVersion,
+};
+
 /**
  * `isSanityConfigured` lets the UI degrade gracefully to its bundled default
  * content when no project id is present (e.g. before the CMS is set up).
