@@ -2,11 +2,20 @@ import { createClient, type SanityClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
+const runtimeConfig = window.__APP_CONFIG__;
+
 // Vite exposes only variables prefixed with VITE_ to the browser bundle.
-const projectId = import.meta.env.VITE_SANITY_PROJECT_ID as string | undefined;
-const dataset = (import.meta.env.VITE_SANITY_DATASET as string) || 'production';
+const projectId =
+  runtimeConfig?.VITE_SANITY_PROJECT_ID ||
+  (import.meta.env.VITE_SANITY_PROJECT_ID as string | undefined);
+const dataset =
+  runtimeConfig?.VITE_SANITY_DATASET ||
+  (import.meta.env.VITE_SANITY_DATASET as string) ||
+  'production';
 const apiVersion =
-  (import.meta.env.VITE_SANITY_API_VERSION as string) || '2024-10-01';
+  runtimeConfig?.VITE_SANITY_API_VERSION ||
+  (import.meta.env.VITE_SANITY_API_VERSION as string) ||
+  '2024-10-01';
 
 export const sanityConfig = {
   projectId,

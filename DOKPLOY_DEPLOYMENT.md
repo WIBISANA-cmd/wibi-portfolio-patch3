@@ -40,8 +40,9 @@ SANITY_AUTH_TOKEN=your-deploy-token
 
 Catatan penting:
 
-- Variabel `VITE_*` dibaca saat proses `vite build`, bukan saat container sudah running.
-- Jadi di Dokploy, variabel ini perlu tersedia sebagai **Build Args** atau build-time environment.
+- Variabel `VITE_*` tetap bisa diberikan sebagai build args, tetapi image ini sekarang juga menulis `runtime-config.js` saat container start.
+- Jadi di Dokploy, Anda bisa set `VITE_*` sebagai environment app biasa dan frontend akan membacanya saat runtime.
+- Jika build args dan runtime env sama-sama ada, nilai runtime env akan diprioritaskan oleh browser.
 - `SANITY_API_TOKEN` tidak diperlukan untuk menjalankan frontend production ini.
 - `SANITY_STUDIO_*` dipakai oleh `sanity.config.ts` dan `sanity.cli.ts` untuk dev, build, dan deploy Studio.
 - `SANITY_STUDIO_HOSTNAME` akan menghasilkan URL Studio production:
@@ -78,7 +79,8 @@ VITE_SANITY_DATASET=production
 VITE_SANITY_API_VERSION=2024-10-01
 ```
 
-6. Deploy.
+6. Atau, jika lebih nyaman di Dokploy, set tiga nilai yang sama sebagai environment runtime app.
+7. Deploy ulang.
 
 ## Deploy Sanity Studio ke production
 
