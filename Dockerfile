@@ -7,7 +7,9 @@ RUN npm ci
 
 COPY . .
 
-ARG VITE_SANITY_PROJECT_ID
+# The project ID is public configuration. Keep a production default so the
+# frontend still connects when Dokploy omits the optional build argument.
+ARG VITE_SANITY_PROJECT_ID=anuxjhjn
 ARG VITE_SANITY_DATASET=production
 ARG VITE_SANITY_API_VERSION=2024-10-01
 
