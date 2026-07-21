@@ -10,7 +10,7 @@ export default function ServicesSection({ data }: { data: ServicesData }) {
     <section id="services" className="py-24 sm:py-32 md:py-40 bg-surface text-ink">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <Reveal yOffset={30}>
-          <h2 className="text-muted font-medium uppercase tracking-widest text-sm md:text-base mb-12 sm:mb-20">
+          <h2 className="text-muted font-medium uppercase tracking-widest text-sm md:text-base mb-12 sm:mb-20" data-speed="1.1">
             Services
           </h2>
         </Reveal>
@@ -21,9 +21,12 @@ export default function ServicesSection({ data }: { data: ServicesData }) {
               ? String(service.orderNumber).padStart(2, '0') 
               : String(index + 1).padStart(2, '0');
             
+            // slight stagger for services parallax
+            const speed = 1 + (index * 0.02);
+
             return (
               <Reveal key={service._id} delay={0} yOffset={40} duration={0.8}>
-                <div className="group flex flex-col md:flex-row items-start md:items-center py-8 sm:py-12 border-b border-line gap-6 sm:gap-12 relative overflow-hidden">
+                <div className="group flex flex-col md:flex-row items-start md:items-center py-8 sm:py-12 border-b border-line gap-6 sm:gap-12 relative overflow-hidden" data-speed={speed}>
                   
                   {/* Number */}
                   <span className="font-display font-light text-2xl sm:text-3xl text-muted md:w-16 flex-shrink-0">

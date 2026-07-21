@@ -76,9 +76,9 @@ export default function AboutSection({ data }: { data: AboutData }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
           
           {/* Left Column: Text */}
-          <div className="lg:col-span-7 flex flex-col gap-8 md:gap-12">
+          <div className="lg:col-span-7 flex flex-col gap-8 md:gap-12" data-speed="1.05">
             <Reveal yOffset={20}>
-              <h2 className="text-muted font-medium uppercase tracking-widest text-sm md:text-base">
+              <h2 className="text-muted font-medium uppercase tracking-widest text-sm md:text-base" data-lag="0.1">
                 {heading}
               </h2>
             </Reveal>
@@ -104,7 +104,7 @@ export default function AboutSection({ data }: { data: AboutData }) {
 
           {/* Right Column: Media */}
           {mediaUrl && (
-            <div className="lg:col-span-5 w-full mt-12 lg:mt-0 lg:pt-16">
+            <div className="lg:col-span-5 w-full mt-12 lg:mt-0 lg:pt-16" data-speed="0.95">
               <Reveal yOffset={40} duration={1.2}>
                 <div className="rounded-2xl overflow-hidden bg-surface-2 aspect-[4/5] w-full">
                   <ParallaxMedia

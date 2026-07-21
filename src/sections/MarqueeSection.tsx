@@ -91,7 +91,7 @@ export default function MarqueeSection({ data }: { data: MarqueeData }) {
       ref={sectionRef}
       className="py-16 md:py-24 overflow-hidden bg-bg"
     >
-      <div className="flex flex-col gap-4 sm:gap-6">
+      <div className="flex flex-col gap-4 sm:gap-6" data-speed="0.95">
         <div className="flex w-max" ref={row1Ref}>
           {row1Content.map((item, i) => (
             <div key={`r1-${i}-${item.id}`} className="px-2 sm:px-3">
