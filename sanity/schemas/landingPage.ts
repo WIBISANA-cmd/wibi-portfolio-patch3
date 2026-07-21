@@ -4,7 +4,6 @@ export default defineType({
   name: 'landingPage',
   title: 'Landing Page',
   type: 'document',
-  // Grouped into tabs so the single document stays easy to navigate.
   groups: [
     { name: 'preloader', title: 'Preloader' },
     { name: 'hero', title: 'Hero' },
@@ -12,14 +11,22 @@ export default defineType({
     { name: 'about', title: 'About' },
     { name: 'services', title: 'Services' },
     { name: 'projects', title: 'Projects' },
+    { name: 'contact', title: 'Contact' },
+    { name: 'footer', title: 'Footer' },
+    { name: 'seo', title: 'SEO' },
   ],
   fields: [
     /* ----------------------------------------------------------- PRELOADER */
     defineField({
       name: 'preloader',
       title: 'Preloader',
-      type: 'preloader',
+      type: 'object',
       group: 'preloader',
+      fields: [
+        defineField({ name: 'enabled', title: 'Enabled', type: 'boolean', initialValue: true }),
+        defineField({ name: 'wordmark', title: 'Wordmark', type: 'string', initialValue: 'WIBISANA' }),
+        defineField({ name: 'durationMs', title: 'Duration (ms)', type: 'number', initialValue: 2000 }),
+      ]
     }),
 
     /* ---------------------------------------------------------------- HERO */
@@ -30,32 +37,23 @@ export default defineType({
       group: 'hero',
       options: { collapsible: true, collapsed: false },
       fields: [
+        defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string' }),
         defineField({
-          name: 'navLinks',
-          title: 'Navbar Links',
-          type: 'array',
-          of: [{ type: 'string' }],
-          initialValue: ['About', 'Price', 'Projects', 'Contact'],
-        }),
-        defineField({
-          name: 'heading',
-          title: 'Main Heading',
+          name: 'headline',
+          title: 'Headline',
           type: 'string',
-          description: 'e.g. "Hi, i’m wibi"',
           validation: (rule) => rule.required(),
         }),
+        defineField({ name: 'subheadline', title: 'Subheadline', type: 'text', rows: 2 }),
         defineField({
-          name: 'description',
-          title: 'Bottom-left Description',
-          type: 'text',
-          rows: 2,
-        }),
-        defineField({
-          name: 'portrait',
-          title: 'Portrait Image',
+          name: 'backgroundImage',
+          title: 'Background Image',
           type: 'image',
           options: { hotspot: true },
+          fields: [{ name: 'alt', type: 'string', title: 'Alt text', validation: (rule) => rule.required() }]
         }),
+        defineField({ name: 'ctaLabel', title: 'CTA Label', type: 'string' }),
+        defineField({ name: 'ctaHref', title: 'CTA Href', type: 'string' }),
       ],
     }),
 
@@ -68,14 +66,8 @@ export default defineType({
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
-          name: 'row1',
-          title: 'Row 1 (scrolls right)',
-          type: 'array',
-          of: [{ type: 'reference', to: [{ type: 'marqueeImage' }] }],
-        }),
-        defineField({
-          name: 'row2',
-          title: 'Row 2 (scrolls left)',
+          name: 'items',
+          title: 'Marquee Items',
           type: 'array',
           of: [{ type: 'reference', to: [{ type: 'marqueeImage' }] }],
         }),
@@ -90,43 +82,28 @@ export default defineType({
       group: 'about',
       options: { collapsible: true, collapsed: false },
       fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string' }),
+        defineField({ name: 'body', title: 'Body Text', type: 'text', rows: 4 }),
         defineField({
-          name: 'title',
-          title: 'Section Title',
-          type: 'string',
-          initialValue: 'About me',
-        }),
-        defineField({
-          name: 'paragraph',
-          title: 'Animated Paragraph',
-          type: 'text',
-          rows: 4,
-        }),
-        // The four decorative 3D slots are pinned to fixed corners by the
-        // design, so only the asset is editable here (no coordinates needed).
-        defineField({
-          name: 'moonIcon',
-          title: 'Decorative — Moon (top-left)',
+          name: 'image',
+          title: 'Media Image',
           type: 'image',
           options: { hotspot: true },
+          fields: [{ name: 'alt', type: 'string', title: 'Alt text', validation: (rule) => rule.required() }]
         }),
         defineField({
-          name: 'legoIcon',
-          title: 'Decorative — Lego (top-right)',
-          type: 'image',
-          options: { hotspot: true },
-        }),
-        defineField({
-          name: 'object1',
-          title: 'Decorative — Object (bottom-left)',
-          type: 'image',
-          options: { hotspot: true },
-        }),
-        defineField({
-          name: 'group1',
-          title: 'Decorative — Group (bottom-right)',
-          type: 'image',
-          options: { hotspot: true },
+          name: 'stats',
+          title: 'Stats',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                { name: 'value', type: 'string', title: 'Value' },
+                { name: 'label', type: 'string', title: 'Label' }
+              ]
+            }
+          ]
         }),
       ],
     }),
@@ -140,13 +117,7 @@ export default defineType({
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
-          name: 'title',
-          title: 'Section Title',
-          type: 'string',
-          initialValue: 'Services',
-        }),
-        defineField({
-          name: 'items',
+          name: 'services',
           title: 'Services',
           type: 'array',
           of: [{ type: 'reference', to: [{ type: 'service' }] }],
@@ -163,16 +134,84 @@ export default defineType({
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
-          name: 'title',
-          title: 'Section Title',
-          type: 'string',
-          initialValue: 'Project',
-        }),
-        defineField({
-          name: 'items',
-          title: 'Projects (drag to reorder)',
+          name: 'projects',
+          title: 'Projects',
           type: 'array',
           of: [{ type: 'reference', to: [{ type: 'project' }] }],
+        }),
+      ],
+    }),
+
+    /* ------------------------------------------------------------- CONTACT */
+    defineField({
+      name: 'contact',
+      title: 'Contact Section',
+      type: 'object',
+      group: 'contact',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string' }),
+        defineField({ name: 'email', title: 'Email Address', type: 'string' }),
+        defineField({
+          name: 'socials',
+          title: 'Social Links',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                { name: 'label', type: 'string', title: 'Label' },
+                { name: 'url', type: 'url', title: 'URL' }
+              ]
+            }
+          ]
+        }),
+        defineField({ name: 'note', title: 'Optional Note', type: 'string' }),
+      ],
+    }),
+
+    /* -------------------------------------------------------------- FOOTER */
+    defineField({
+      name: 'footer',
+      title: 'Footer',
+      type: 'object',
+      group: 'footer',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({ name: 'tagline', title: 'Tagline / Wordmark', type: 'string' }),
+        defineField({ name: 'copyright', title: 'Copyright', type: 'string' }),
+        defineField({
+          name: 'links',
+          title: 'Links',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                { name: 'label', type: 'string', title: 'Label' },
+                { name: 'url', type: 'string', title: 'URL' }
+              ]
+            }
+          ]
+        }),
+      ],
+    }),
+
+    /* ----------------------------------------------------------------- SEO */
+    defineField({
+      name: 'seo',
+      title: 'SEO Settings',
+      type: 'object',
+      group: 'seo',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({ name: 'title', title: 'Meta Title', type: 'string' }),
+        defineField({ name: 'description', title: 'Meta Description', type: 'text', rows: 2 }),
+        defineField({
+          name: 'ogImage',
+          title: 'OG Image',
+          type: 'image',
+          fields: [{ name: 'alt', type: 'string', title: 'Alt text', validation: (rule) => rule.required() }]
         }),
       ],
     }),

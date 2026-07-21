@@ -1,34 +1,34 @@
-import { useEffect, type ReactNode } from 'react';
-import Lenis from 'lenis';
-import { frame, cancelFrame } from 'framer-motion';
+import { type ReactNode, useRef } from 'react';
+import { gsap, ScrollSmoother, useGSAP } from '../lib/gsap';
 
-/**
- * Global smooth-scroll provider.
- *
- * Lenis replaces the browser's stiff native scroll with an inertia/damped feel.
- * We drive Lenis from Framer Motion's own `frame` loop (instead of a separate
- * requestAnimationFrame) so both share one clock — this keeps every `useScroll`
- * reading in the sections perfectly in sync with the smoothed scroll position.
- */
 export default function SmoothScroll({ children }: { children: ReactNode }) {
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
+  const wrapper = useRef<HTMLDivElement>(null);
+  const content = useRef<HTMLDivElement>(null);
 
-    const update = (data: { timestamp: number }) => {
-      lenis.raf(data.timestamp);
-    };
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
 
-    frame.update(update, true);
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        ScrollSmoother.create({
+          wrapper: wrapper.current,
+          content: content.current,
+          smooth: 1.2,
+          effects: true,
+          smoothTouch: 0.1,
+        });
+      });
 
-    return () => {
-      cancelFrame(update);
-      lenis.destroy();
-    };
-  }, []);
+      return () => mm.revert();
+    },
+    { scope: wrapper }
+  );
 
-  return <>{children}</>;
+  return (
+    <div ref={wrapper} id="smooth-wrapper">
+      <div ref={content} id="smooth-content">
+        {children}
+      </div>
+    </div>
+  );
 }

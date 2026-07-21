@@ -1,82 +1,98 @@
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
 /** A raw Sanity image object (asset reference + optional hotspot/crop). */
-export type SanityImage = SanityImageSource;
+export type SanityImage = SanityImageSource & { alt?: string };
 
 /* ----------------------------------------------------- referenced documents */
 
 export interface ServiceDoc {
   _id: string;
-  number: string;
-  name: string;
+  orderNumber?: number;
+  title: string;
   description: string;
+  image?: SanityImage;
 }
 
 export interface ProjectDoc {
   _id: string;
-  number: string;
-  projectType: 'Client' | 'Personal';
   title: string;
-  linkButton?: string;
-  images?: {
-    col1_image1?: SanityImage;
-    col1_image2?: SanityImage;
-    col2_image?: SanityImage;
-  };
+  category: string;
+  year: string;
+  image: SanityImage;
+  url?: string;
+  description?: string;
+  order?: number;
 }
 
 export interface MarqueeImageDoc {
   _id: string;
   image: SanityImage;
+  label?: string;
 }
 
 /* ------------------------------------------------ landingPage singleton shape */
 
 export interface PreloaderData {
-  isEnabled?: boolean;
-  loadingWords?: string[];
-  /** Milliseconds each word stays on screen. */
-  animationDuration?: number;
-  preloaderBgColor?: string;
-  preloaderTextColor?: string;
+  enabled?: boolean;
+  wordmark?: string;
+  durationMs?: number;
 }
 
 export interface HeroData {
-  navLinks?: string[];
-  heading?: string;
-  description?: string;
-  portrait?: SanityImage;
+  eyebrow?: string;
+  headline?: string;
+  subheadline?: string;
+  backgroundImage?: SanityImage;
+  ctaLabel?: string;
+  ctaHref?: string;
 }
 
 export interface AboutData {
-  title?: string;
-  paragraph?: string;
-  moonIcon?: SanityImage;
-  legoIcon?: SanityImage;
-  object1?: SanityImage;
-  group1?: SanityImage;
+  heading?: string;
+  body?: string;
+  image?: SanityImage;
+  stats?: { value: string; label: string }[];
 }
 
 export interface ServicesData {
-  title?: string;
-  items?: ServiceDoc[];
+  services?: ServiceDoc[];
 }
 
 export interface ProjectsData {
-  title?: string;
-  items?: ProjectDoc[];
+  projects?: ProjectDoc[];
 }
 
 export interface MarqueeData {
-  row1?: MarqueeImageDoc[];
-  row2?: MarqueeImageDoc[];
+  items?: MarqueeImageDoc[];
+}
+
+export interface ContactData {
+  heading?: string;
+  email?: string;
+  socials?: { label: string; url: string }[];
+  note?: string;
+}
+
+export interface FooterData {
+  tagline?: string;
+  copyright?: string;
+  links?: { label: string; url: string }[];
+}
+
+export interface SEOData {
+  title?: string;
+  description?: string;
+  ogImage?: SanityImage;
 }
 
 export interface LandingPage {
   preloader?: PreloaderData;
   hero?: HeroData;
+  marquee?: MarqueeData;
   about?: AboutData;
   services?: ServicesData;
   projects?: ProjectsData;
-  marquee?: MarqueeData;
+  contact?: ContactData;
+  footer?: FooterData;
+  seo?: SEOData;
 }

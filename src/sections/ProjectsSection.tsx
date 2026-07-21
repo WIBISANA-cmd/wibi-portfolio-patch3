@@ -1,192 +1,119 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import LiveProjectButton from '../components/LiveProjectButton';
+import { gsap, useGSAP } from '../lib/gsap';
+import Reveal from '../components/Reveal';
+import ParallaxMedia from '../components/ParallaxMedia';
 import { imageUrl } from '../lib/sanity.client';
-import { useSectionProgress, useParallax } from '../lib/useParallax';
 import type { ProjectsData, ProjectDoc } from '../lib/sanity.types';
 
-/** Shape the card actually renders — image sources already resolved to URLs. */
-interface RenderProject {
-  id: string;
-  number: string;
-  category: string;
-  name: string;
-  link?: string;
-  col1: [string?, string?];
-  col2?: string;
-}
+function ProjectCard({ project, index, total }: { project: ProjectDoc; index: number; total: number }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const src = imageUrl(project.image, 1280);
+  const alt = project.image.alt || project.title;
 
-const CARD_RADIUS = 'rounded-[40px] sm:rounded-[50px] md:rounded-[60px]';
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
 
-/** Convert a CMS project document into the render-ready shape. */
-function toRenderProject(doc: ProjectDoc): RenderProject {
-  return {
-    id: doc._id,
-    number: doc.number,
-    category: doc.projectType,
-    name: doc.title,
-    link: doc.linkButton,
-    col1: [
-      imageUrl(doc.images?.col1_image1, 1280),
-      imageUrl(doc.images?.col1_image2, 1280),
-    ],
-    col2: imageUrl(doc.images?.col2_image, 1280),
-  };
-}
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      // Stack effect: scale down slightly as it reaches the top, based on its index relative to total
+      // But a simpler stack is just stick position which we use sticky for.
+      // We can add a slight scale down when the *next* card covers it.
+      
+      const targetScale = 1 - ((total - 1 - index) * 0.02);
+      
+      gsap.to(cardRef.current, {
+        scale: targetScale,
+        opacity: 0.5,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: 'top 15%',
+          end: `+=${window.innerHeight}`,
+          scrub: true,
+        }
+      });
+    });
 
-/**
- * Image tile with an in-frame parallax: the frame (wrapper) stays put while the
- * image drifts slowly inside it. The image is scaled up a touch so the drift
- * never exposes an empty edge. Degrades to a neutral placeholder if src is
- * missing. `wrapperClassName` styles the visible frame (radius / size).
- */
-function ParallaxImage({
-  src,
-  alt,
-  wrapperClassName,
-  style,
-}: {
-  src?: string;
-  alt: string;
-  wrapperClassName: string;
-  style?: React.CSSProperties;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const progress = useSectionProgress(ref);
-  const y = useParallax(progress, -22, 22);
-
-  if (!src) {
-    return (
-      <div ref={ref} className={`${wrapperClassName} bg-[#1a1a1a]`} style={style} aria-hidden />
-    );
-  }
-
-  return (
-    <div ref={ref} className={`${wrapperClassName} overflow-hidden`} style={style}>
-      <motion.img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        className="w-full h-full object-cover"
-        style={{ y, scale: 1.2 }}
-      />
-    </div>
-  );
-}
-
-function ProjectCard({
-  project,
-  index,
-  totalCards,
-}: {
-  project: RenderProject;
-  index: number;
-  totalCards: number;
-}) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'start start'],
-  });
-
-  const targetScale = 1 - (totalCards - 1 - index) * 0.03;
-  const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale]);
+    return () => mm.revert();
+  }, { scope: cardRef });
 
   return (
     <div
-      ref={containerRef}
-      className="h-[85vh] flex items-start justify-center sticky top-24 md:top-32"
-      style={{ top: `${index * 28}px` }}
+      ref={cardRef}
+      className="sticky top-24 md:top-32 w-full flex flex-col pt-8 md:pt-12"
+      style={{ zIndex: index, transformOrigin: 'top center' }}
     >
-      <motion.div
-        style={{ scale, background: '#0C0C0C' }}
-        className={`${CARD_RADIUS} border-2 border-[#D7E2EA] p-4 sm:p-6 md:p-8 w-full`}
-      >
-        {/* Top row */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-4 sm:mb-6 md:mb-8">
-          <div className="flex items-center gap-4 sm:gap-6">
-            <span
-              className="font-black text-[#D7E2EA]"
-              style={{ fontSize: 'clamp(3rem, 10vw, 140px)', lineHeight: 1 }}
-            >
-              {project.number}
-            </span>
-            <div className="flex flex-col gap-1">
-              <span className="text-[#D7E2EA]/60 font-light uppercase tracking-widest text-xs sm:text-sm">
-                {project.category}
-              </span>
-              <span
-                className="text-[#D7E2EA] font-medium uppercase"
-                style={{ fontSize: 'clamp(1rem, 2.2vw, 2.1rem)' }}
-              >
-                {project.name}
-              </span>
+      <div className="bg-surface rounded-3xl md:rounded-[40px] border border-line shadow-sm overflow-hidden flex flex-col relative group">
+        
+        {/* Top Info Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-6 sm:p-8 md:p-10 gap-4 sm:gap-8 bg-surface z-10">
+          <div className="flex flex-col gap-1">
+            <h3 className="font-display font-medium text-3xl sm:text-4xl md:text-5xl tracking-tight text-ink">
+              {project.title}
+            </h3>
+            <div className="flex items-center gap-3 text-muted text-sm uppercase tracking-wider font-medium mt-2">
+              <span>{project.category}</span>
+              <span className="w-1 h-1 rounded-full bg-line" />
+              <span>{project.year}</span>
             </div>
           </div>
-          {project.link ? (
-            <a href={project.link} target="_blank" rel="noopener noreferrer">
-              <LiveProjectButton />
-            </a>
-          ) : (
-            <LiveProjectButton />
-          )}
+
+          <div className="flex-shrink-0 mt-4 sm:mt-0">
+            {project.url ? (
+              <a
+                href={project.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center border border-line rounded-full px-6 py-3 font-medium text-ink hover:bg-ink hover:text-bg transition-colors"
+              >
+                View Project
+              </a>
+            ) : (
+              <span className="inline-flex items-center justify-center border border-line rounded-full px-6 py-3 font-medium text-muted bg-surface-2">
+                Coming Soon
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Bottom row: image grid */}
-        <div className="flex gap-3 sm:gap-4">
-          <div className="flex flex-col gap-3 sm:gap-4" style={{ width: '40%' }}>
-            <ParallaxImage
-              src={project.col1[0]}
-              alt={`${project.name} preview 1`}
-              wrapperClassName={`${CARD_RADIUS} w-full`}
-              style={{ height: 'clamp(130px, 16vw, 230px)' }}
-            />
-            <ParallaxImage
-              src={project.col1[1]}
-              alt={`${project.name} preview 2`}
-              wrapperClassName={`${CARD_RADIUS} w-full`}
-              style={{ height: 'clamp(160px, 22vw, 340px)' }}
+        {/* Media Container */}
+        {src && (
+          <div className="w-full aspect-[4/3] md:aspect-[16/9] relative overflow-hidden bg-surface-2 border-t border-line">
+            <ParallaxMedia
+              src={src}
+              alt={alt}
+              speed={0.15}
+              className="w-full h-full"
+              imageClassName="grayscale group-hover:grayscale-0 transition-all duration-700 ease-out scale-105 group-hover:scale-100"
             />
           </div>
-          <div style={{ width: '60%' }}>
-            <ParallaxImage
-              src={project.col2}
-              alt={`${project.name} preview 3`}
-              wrapperClassName={`${CARD_RADIUS} w-full h-full`}
-            />
-          </div>
-        </div>
-      </motion.div>
+        )}
+      </div>
     </div>
   );
 }
 
 export default function ProjectsSection({ data }: { data: ProjectsData }) {
-  const title = data.title ?? '';
-  const projects: RenderProject[] = (data.items ?? []).map(toRenderProject);
+  const projects = data.projects ?? [];
+
+  if (projects.length === 0) return null;
+
+  // Sort by order
+  const sortedProjects = [...projects].sort((a, b) => (a.order ?? 99) - (b.order ?? 99));
 
   return (
-    <section
-      id="projects"
-      className="relative z-10 -mt-10 sm:-mt-12 md:-mt-14 rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] px-5 sm:px-8 md:px-10 py-20 sm:py-24 md:py-32"
-      style={{ background: '#0C0C0C' }}
-    >
-      <h2
-        className="hero-heading font-black uppercase leading-none tracking-tight text-center mb-16 sm:mb-20 md:mb-28"
-        style={{ fontSize: 'clamp(3rem, 12vw, 160px)' }}
-      >
-        {title}
-      </h2>
+    <section id="projects" className="py-24 sm:py-32 md:py-40 bg-surface">
+      <div className="max-w-6xl mx-auto px-6 md:px-12 relative">
+        <Reveal yOffset={30} className="mb-12 md:mb-20">
+          <h2 className="text-muted font-medium uppercase tracking-widest text-sm md:text-base">
+            Selected Projects
+          </h2>
+        </Reveal>
 
-      <div className="max-w-6xl mx-auto">
-        {projects.map((project, i) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-            index={i}
-            totalCards={projects.length}
-          />
-        ))}
+        <div className="flex flex-col relative pb-32">
+          {sortedProjects.map((project, i) => (
+            <ProjectCard key={project._id} project={project} index={i} total={sortedProjects.length} />
+          ))}
+        </div>
       </div>
     </section>
   );

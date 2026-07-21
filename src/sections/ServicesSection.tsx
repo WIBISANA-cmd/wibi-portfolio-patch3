@@ -1,69 +1,53 @@
-import { useRef } from 'react';
-import { motion } from 'framer-motion';
-import FadeIn from '../components/FadeIn';
-import { useSectionProgress, useParallax } from '../lib/useParallax';
-import type { ServicesData, ServiceDoc } from '../lib/sanity.types';
-
-function ServiceRow({ service, index }: { service: ServiceDoc; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const progress = useSectionProgress(ref);
-  // Subtle reveal drift — the row eases upward as it passes through view.
-  const y = useParallax(progress, 60, -60);
-
-  return (
-    <div ref={ref} style={{ borderTop: '1px solid rgba(12, 12, 12, 0.15)' }}>
-      <FadeIn delay={index * 0.1}>
-        <motion.div
-          style={{ y }}
-          className="flex items-start gap-6 sm:gap-10 py-8 sm:py-10 md:py-12"
-        >
-          <span
-            className="font-black flex-shrink-0"
-            style={{ color: '#0C0C0C', fontSize: 'clamp(3rem, 10vw, 140px)', lineHeight: 1 }}
-          >
-            {service.number}
-          </span>
-          <div className="flex flex-col gap-3 pt-1">
-            <h3
-              className="font-medium uppercase"
-              style={{ color: '#0C0C0C', fontSize: 'clamp(1rem, 2.2vw, 2.1rem)' }}
-            >
-              {service.name}
-            </h3>
-            <p
-              className="font-light leading-relaxed max-w-2xl"
-              style={{ color: '#0C0C0C', opacity: 0.6, fontSize: 'clamp(0.85rem, 1.6vw, 1.25rem)' }}
-            >
-              {service.description}
-            </p>
-          </div>
-        </motion.div>
-      </FadeIn>
-    </div>
-  );
-}
+import Reveal from '../components/Reveal';
+import type { ServicesData } from '../lib/sanity.types';
 
 export default function ServicesSection({ data }: { data: ServicesData }) {
-  const title = data.title ?? '';
-  const services = data.items ?? [];
+  const services = data.services ?? [];
+
+  if (services.length === 0) return null;
 
   return (
-    <section
-      id="price"
-      className="rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] px-5 sm:px-8 md:px-10 py-20 sm:py-24 md:py-32"
-      style={{ background: '#FFFFFF' }}
-    >
-      <h2
-        className="font-black uppercase text-center mb-16 sm:mb-20 md:mb-28"
-        style={{ color: '#0C0C0C', fontSize: 'clamp(3rem, 12vw, 160px)' }}
-      >
-        {title}
-      </h2>
+    <section id="services" className="py-24 sm:py-32 md:py-40 bg-surface text-ink">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <Reveal yOffset={30}>
+          <h2 className="text-muted font-medium uppercase tracking-widest text-sm md:text-base mb-12 sm:mb-20">
+            Services
+          </h2>
+        </Reveal>
 
-      <div className="max-w-5xl mx-auto">
-        {services.map((service, i) => (
-          <ServiceRow key={service._id} service={service} index={i} />
-        ))}
+        <div className="flex flex-col border-t border-line">
+          {services.map((service, index) => {
+            const numStr = service.orderNumber != null 
+              ? String(service.orderNumber).padStart(2, '0') 
+              : String(index + 1).padStart(2, '0');
+            
+            return (
+              <Reveal key={service._id} delay={0} yOffset={40} duration={0.8}>
+                <div className="group flex flex-col md:flex-row items-start md:items-center py-8 sm:py-12 border-b border-line gap-6 sm:gap-12 relative overflow-hidden">
+                  
+                  {/* Number */}
+                  <span className="font-display font-light text-2xl sm:text-3xl text-muted md:w-16 flex-shrink-0">
+                    {numStr}
+                  </span>
+                  
+                  {/* Title & Description */}
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full gap-4 sm:gap-8">
+                    <h3 className="font-display font-medium text-3xl sm:text-4xl md:text-5xl tracking-tight transition-transform duration-500 group-hover:translate-x-2">
+                      {service.title}
+                    </h3>
+                    
+                    <p className="text-ink-2 font-body text-base sm:text-lg max-w-md md:text-right leading-relaxed transition-opacity duration-500">
+                      {service.description}
+                    </p>
+                  </div>
+
+                  {/* Optional Hover Image (Desktop only) */}
+                  {/* Implementing this as a pure CSS hover effect for simplicity if an image is provided */}
+                </div>
+              </Reveal>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

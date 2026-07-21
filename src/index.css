@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg: #F5F5F4;
+  --surface: #FFFFFF;
+  --surface-2: #EAEAE8;
+  --line: #D9D9D6;
+  --muted: #8A8A86;
+  --ink-2: #3F3F3C;
+  --ink: #141413;
+  --ink-strong: #0A0A09;
+}
+
 *,
 *::before,
 *::after {
@@ -13,18 +24,21 @@
 html,
 body,
 #root {
-  background: #0c0c0c;
-  font-family: 'Kanit', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .hero-heading {
-  background: linear-gradient(180deg, #646973 0%, #bbccd7 100%);
+  background: var(--ink);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Preloader word — subtle neon flicker layered under the inline glow. */
+/* Preloader word */
 .preloader-word {
   animation: preloader-flicker 3.2s steps(60) infinite;
 }
@@ -58,26 +72,9 @@ body,
   .preloader-word {
     animation: none;
   }
-}
-
-/* Lenis smooth scroll — recommended base styles */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
+  
+  /* Disable smooth scroll on reduced motion */
+  html {
+    scroll-behavior: auto !important;
+  }
 }

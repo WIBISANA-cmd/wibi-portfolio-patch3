@@ -1,84 +1,123 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap';
 import { imageUrl } from '../lib/sanity.client';
-import { useSectionProgress, useParallax } from '../lib/useParallax';
 import type { MarqueeData } from '../lib/sanity.types';
-
-const tripled = (arr: string[]) => [...arr, ...arr, ...arr];
-
-function Tile({ src }: { src: string }) {
-  return (
-    <img
-      src={src}
-      alt=""
-      loading="lazy"
-      className="rounded-2xl object-cover flex-shrink-0"
-      style={{ width: 420, height: 270 }}
-    />
-  );
-}
 
 export default function MarqueeSection({ data }: { data: MarqueeData }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [offset, setOffset] = useState(0);
+  const row1Ref = useRef<HTMLDivElement>(null);
+  const row2Ref = useRef<HTMLDivElement>(null);
 
-  // Gentle vertical drift for the whole band, layered on top of the existing
-  // horizontal scroll animation, so the section feels like it floats in.
-  const progress = useSectionProgress(sectionRef);
-  const bandY = useParallax(progress, 80, -80);
+  const items = data.items ?? [];
+  const validItems = items
+    .filter((item) => item.image)
+    .map((item) => ({
+      id: item._id,
+      src: imageUrl(item.image, 840),
+      alt: item.image.alt || item.label || 'Marquee image',
+    }));
 
-  const rowOne = (data.row1 ?? [])
-    .map((m) => imageUrl(m.image, 840))
-    .filter((url): url is string => Boolean(url));
-  const rowTwo = (data.row2 ?? [])
-    .map((m) => imageUrl(m.image, 840))
-    .filter((url): url is string => Boolean(url));
+  if (validItems.length === 0) return null;
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const section = sectionRef.current;
-      if (!section) return;
-      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
-      const next = (window.scrollY - sectionTop + window.innerHeight) * 0.3;
-      setOffset(next);
-    };
+  // Split into two rows for visual interest
+  const half = Math.ceil(validItems.length / 2);
+  const row1Items = validItems.slice(0, half);
+  const row2Items = validItems.slice(half);
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // We need enough items to loop seamlessly. We duplicate the items 3 times.
+  const row1Content = [...row1Items, ...row1Items, ...row1Items];
+  const row2Content = row2Items.length ? [...row2Items, ...row2Items, ...row2Items] : row1Content;
 
-  const rowOneX = offset - 200;
-  const rowTwoX = -(offset - 200);
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        if (!row1Ref.current || !row2Ref.current) return;
+
+        const row1Width = row1Ref.current.scrollWidth / 3;
+        const row2Width = row2Ref.current.scrollWidth / 3;
+
+        // Base tweens
+        const tl1 = gsap.to(row1Ref.current, {
+          x: -row1Width,
+          duration: 30,
+          ease: 'none',
+          repeat: -1,
+        });
+
+        // Row 2 starts offset and moves the other way
+        gsap.set(row2Ref.current, { x: -row2Width });
+        const tl2 = gsap.to(row2Ref.current, {
+          x: 0,
+          duration: 35,
+          ease: 'none',
+          repeat: -1,
+        });
+
+        // React to scroll velocity
+        ScrollTrigger.create({
+          trigger: sectionRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          onUpdate: (self) => {
+            const velocity = self.getVelocity();
+            // Nudge timeScale based on velocity (clamped)
+            let speedDelta = velocity / 500;
+            const clampedDelta = gsap.utils.clamp(-3, 3, speedDelta);
+            
+            // Apply speed bump
+            gsap.to([tl1, tl2], {
+              timeScale: 1 + Math.abs(clampedDelta),
+              duration: 0.5,
+              ease: 'power2.out',
+              overwrite: true,
+              onComplete: () => {
+                // Return to normal speed
+                gsap.to([tl1, tl2], { timeScale: 1, duration: 1, ease: 'power2.out' });
+              }
+            });
+          },
+        });
+      });
+
+      return () => mm.revert();
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <section
       ref={sectionRef}
-      className="pt-24 sm:pt-32 md:pt-40 pb-10"
-      style={{ background: '#0C0C0C', overflowX: 'clip' }}
+      className="py-16 md:py-24 overflow-hidden bg-bg"
     >
-      <motion.div className="flex flex-col gap-3" style={{ y: bandY }}>
-        {rowOne.length > 0 && (
-          <div
-            className="flex gap-3 w-max"
-            style={{ willChange: 'transform', transform: `translateX(${rowOneX}px)` }}
-          >
-            {tripled(rowOne).map((src, i) => (
-              <Tile key={`r1-${i}`} src={src} />
-            ))}
-          </div>
-        )}
-        {rowTwo.length > 0 && (
-          <div
-            className="flex gap-3 w-max"
-            style={{ willChange: 'transform', transform: `translateX(${rowTwoX}px)` }}
-          >
-            {tripled(rowTwo).map((src, i) => (
-              <Tile key={`r2-${i}`} src={src} />
-            ))}
-          </div>
-        )}
-      </motion.div>
+      <div className="flex flex-col gap-4 sm:gap-6">
+        <div className="flex w-max" ref={row1Ref}>
+          {row1Content.map((item, i) => (
+            <div key={`r1-${i}-${item.id}`} className="px-2 sm:px-3">
+              <img
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                className="w-60 sm:w-80 md:w-[420px] aspect-[16/10] object-cover rounded-xl sm:rounded-2xl flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-400 ease-out"
+              />
+            </div>
+          ))}
+        </div>
+        
+        <div className="flex w-max" ref={row2Ref}>
+          {row2Content.map((item, i) => (
+            <div key={`r2-${i}-${item.id}`} className="px-2 sm:px-3">
+              <img
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                className="w-60 sm:w-80 md:w-[420px] aspect-[16/10] object-cover rounded-xl sm:rounded-2xl flex-shrink-0 grayscale hover:grayscale-0 transition-all duration-400 ease-out"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

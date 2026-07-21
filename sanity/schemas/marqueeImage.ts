@@ -6,23 +6,31 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'title',
-      title: 'Internal Title',
+      name: 'label',
+      title: 'Label',
       type: 'string',
-      description: 'Label used only inside the Studio to identify this tile',
+      description: 'Optional text label',
     }),
     defineField({
       name: 'image',
       title: 'Image',
       type: 'image',
       options: { hotspot: true },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alt text',
+          validation: (rule) => rule.required()
+        }
+      ],
       validation: (rule) => rule.required(),
     }),
   ],
   preview: {
-    select: { title: 'title', media: 'image' },
+    select: { title: 'label', media: 'image' },
     prepare({ title, media }) {
-      return { title: title || 'Marquee tile', media };
+      return { title: title || 'Marquee Image', media };
     },
   },
 });

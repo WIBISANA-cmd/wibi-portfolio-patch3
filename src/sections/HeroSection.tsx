@@ -1,97 +1,83 @@
-import { useRef } from 'react';
-import { motion } from 'framer-motion';
-import FadeIn from '../components/FadeIn';
-import Magnet from '../components/Magnet';
-import ContactButton from '../components/ContactButton';
+import Reveal from '../components/Reveal';
+import SplitReveal from '../components/SplitReveal';
+import ParallaxMedia from '../components/ParallaxMedia';
 import { imageUrl } from '../lib/sanity.client';
-import { useSectionProgress, useParallax } from '../lib/useParallax';
 import type { HeroData } from '../lib/sanity.types';
 
 export default function HeroSection({ data }: { data: HeroData }) {
-  const navLinks = data.navLinks ?? [];
-  const heading = data.heading ?? '';
-  const description = data.description ?? '';
-  const portraitUrl = imageUrl(data.portrait, 1040);
-
-  const sectionRef = useRef<HTMLElement>(null);
-  const progress = useSectionProgress(sectionRef);
-  // Heading (background layer) drifts up slowly; portrait (foreground) moves up
-  // faster — the speed difference is what reads as depth.
-  const headingY = useParallax(progress, -40, 40);
-  const portraitY = useParallax(progress, 110, -110);
+  const eyebrow = data.eyebrow ?? '';
+  const heading = data.headline ?? '';
+  const subheadline = data.subheadline ?? '';
+  const bgUrl = imageUrl(data.backgroundImage, 1920);
+  const bgAlt = data.backgroundImage?.alt || 'Background';
+  const ctaLabel = data.ctaLabel ?? '';
+  const ctaHref = data.ctaHref ?? '';
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative h-screen flex flex-col"
-      style={{ overflowX: 'clip' }}
-    >
-      {/* Navbar */}
-      <FadeIn
-        as="nav"
-        delay={0}
-        y={-20}
-        className="relative z-20 flex justify-between px-6 md:px-10 pt-6 md:pt-8"
-      >
-        {navLinks.map((link) => (
-          <a
-            key={link}
-            href={`#${link.toLowerCase()}`}
-            className="text-[#D7E2EA] font-medium uppercase tracking-wider text-sm md:text-lg lg:text-[1.4rem] transition-opacity duration-200 hover:opacity-70"
-          >
-            {link}
-          </a>
-        ))}
-      </FadeIn>
-
-      {/* Heading */}
-      <div className="overflow-hidden px-6 md:px-10">
-        <FadeIn delay={0.15} y={40}>
-          <motion.h1
-            style={{ y: headingY }}
-            className="hero-heading font-black uppercase tracking-tight leading-none whitespace-nowrap w-full text-[14vw] sm:text-[15vw] md:text-[16vw] lg:text-[17.5vw] mt-6 sm:mt-4 md:-mt-5"
-          >
-            {heading}
-          </motion.h1>
-        </FadeIn>
-      </div>
-
-      {/* Bottom bar */}
-      <div className="mt-auto flex justify-between items-end px-6 md:px-10 pb-7 sm:pb-8 md:pb-10">
-        <FadeIn
-          as="p"
-          delay={0.35}
-          y={20}
-          className="text-[#D7E2EA] font-light uppercase tracking-wide leading-snug max-w-[160px] sm:max-w-[220px] md:max-w-[260px]"
-          style={{ fontSize: 'clamp(0.75rem, 1.4vw, 1.5rem)' }}
-        >
-          {description}
-        </FadeIn>
-
-        <FadeIn delay={0.5} y={20}>
-          <ContactButton />
-        </FadeIn>
-      </div>
-
-      {/* Portrait */}
-      {portraitUrl && (
-        <FadeIn
-          delay={0.6}
-          y={30}
-          className="absolute left-1/2 -translate-x-1/2 z-10 w-[280px] sm:w-[360px] md:w-[440px] lg:w-[520px] top-1/2 -translate-y-1/2 sm:top-auto sm:translate-y-0 sm:bottom-0"
-        >
-          <motion.div style={{ y: portraitY }}>
-            <Magnet
-              padding={150}
-              strength={3}
-              activeTransition="transform 0.3s ease-out"
-              inactiveTransition="transform 0.6s ease-in-out"
-            >
-              <img src={portraitUrl} alt="Portrait" className="w-full" />
-            </Magnet>
-          </motion.div>
-        </FadeIn>
+    <section className="relative h-screen flex flex-col justify-center overflow-hidden">
+      {/* Background layer */}
+      {bgUrl && (
+        <div className="absolute inset-0 z-0 opacity-40">
+          <ParallaxMedia
+            src={bgUrl}
+            alt={bgAlt}
+            className="w-full h-full"
+            speed={0.15}
+            imageClassName="grayscale"
+          />
+        </div>
       )}
+
+      {/* Content */}
+      <div className="relative z-10 px-6 md:px-12 w-full max-w-7xl mx-auto flex flex-col">
+        {eyebrow && (
+          <Reveal delay={0.2} yOffset={20}>
+            <p className="text-muted uppercase tracking-widest text-sm md:text-base mb-4 md:mb-6 font-medium">
+              {eyebrow}
+            </p>
+          </Reveal>
+        )}
+
+        <SplitReveal
+          as="h1"
+          text={heading}
+          type="chars"
+          delay={0.4}
+          stagger={0.03}
+          className="hero-heading font-display font-black uppercase tracking-tighter leading-[0.9] text-[13vw] sm:text-[14vw] md:text-[12vw] lg:text-[10vw]"
+        />
+
+        <div className="mt-8 md:mt-12 flex flex-col sm:flex-row items-start sm:items-end justify-between max-w-4xl gap-8">
+          {subheadline && (
+            <Reveal delay={1.2} yOffset={20}>
+              <p className="text-ink-2 font-body text-lg md:text-xl lg:text-2xl max-w-md leading-relaxed">
+                {subheadline}
+              </p>
+            </Reveal>
+          )}
+
+          {ctaLabel && ctaHref && (
+            <Reveal delay={1.4} yOffset={20}>
+              <a
+                href={ctaHref}
+                className="inline-flex items-center justify-center bg-ink-strong text-bg px-8 py-4 rounded-xl font-medium text-lg hover:bg-ink transition-colors whitespace-nowrap"
+              >
+                {ctaLabel}
+              </a>
+            </Reveal>
+          )}
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <Reveal delay={2.0} yOffset={0} className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-muted text-xs uppercase tracking-widest">Scroll</span>
+          <div className="w-[1px] h-12 bg-line overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-full h-full bg-ink-2 animate-bounce origin-top" />
+          </div>
+        </div>
+      </Reveal>
     </section>
   );
 }

@@ -16,51 +16,57 @@ export class LandingPageFetchError extends Error {
  */
 export const landingPageQuery = /* groq */ `
 *[_type == "landingPage"][0]{
-  preloader{
-    isEnabled,
-    loadingWords,
-    animationDuration,
-    preloaderBgColor,
-    preloaderTextColor
-  },
+  preloader,
   hero{
-    navLinks,
-    heading,
-    description,
-    portrait
+    eyebrow,
+    headline,
+    subheadline,
+    backgroundImage,
+    ctaLabel,
+    ctaHref
+  },
+  marquee{
+    items[]->{ _id, image, label }
   },
   about{
-    title,
-    paragraph,
-    moonIcon,
-    legoIcon,
-    object1,
-    group1
+    heading,
+    body,
+    image,
+    stats
   },
   services{
-    title,
-    items[]->{
+    services[]->{
       _id,
-      number,
-      name,
-      description
+      orderNumber,
+      title,
+      description,
+      image
     }
   },
   projects{
-    title,
-    items[]->{
+    projects[]->{
       _id,
-      number,
-      projectType,
       title,
-      linkButton,
-      images
+      category,
+      year,
+      image,
+      url,
+      description,
+      order
     }
   },
-  marquee{
-    row1[]->{ _id, image },
-    row2[]->{ _id, image }
-  }
+  contact{
+    heading,
+    email,
+    socials,
+    note
+  },
+  footer{
+    tagline,
+    copyright,
+    links
+  },
+  seo
 }`;
 
 /**

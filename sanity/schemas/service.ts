@@ -6,15 +6,13 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'number',
-      title: 'Sequence Number',
-      type: 'string',
-      description: 'e.g. "01"',
-      validation: (rule) => rule.required(),
+      name: 'orderNumber',
+      title: 'Order Number',
+      type: 'number',
     }),
     defineField({
-      name: 'name',
-      title: 'Service Name',
+      name: 'title',
+      title: 'Title',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
@@ -22,14 +20,28 @@ export default defineType({
       name: 'description',
       title: 'Description',
       type: 'text',
-      rows: 3,
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'image',
+      title: 'Optional Image',
+      type: 'image',
+      options: { hotspot: true },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alt text',
+          validation: (rule) => rule.required(),
+        },
+      ],
     }),
   ],
   preview: {
-    select: { title: 'name', number: 'number', subtitle: 'description' },
-    prepare({ title, number, subtitle }) {
-      return { title: `${number ?? '--'} · ${title ?? 'Untitled'}`, subtitle };
+    select: {
+      title: 'title',
+      subtitle: 'description',
+      media: 'image',
     },
   },
 });

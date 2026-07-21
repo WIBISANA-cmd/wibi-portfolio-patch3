@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import NavSection from './sections/NavSection';
 import HeroSection from './sections/HeroSection';
 import MarqueeSection from './sections/MarqueeSection';
 import AboutSection from './sections/AboutSection';
 import ServicesSection from './sections/ServicesSection';
 import ProjectsSection from './sections/ProjectsSection';
+import ContactSection from './sections/ContactSection';
+import FooterSection from './sections/FooterSection';
 import SmoothScroll from './components/SmoothScroll';
 import Preloader from './components/Preloader';
 import { useLandingPage } from './lib/useLandingPage';
@@ -19,15 +21,14 @@ function StatusScreen({
 }) {
   return (
     <main
-      className="h-screen flex items-center justify-center px-6 text-center"
-      style={{ background: '#0C0C0C' }}
+      className="h-screen flex items-center justify-center px-6 text-center bg-bg text-ink"
     >
       <div className="max-w-2xl space-y-4">
-        <p className="text-[#D7E2EA] font-light uppercase tracking-widest text-sm">
+        <p className="text-muted font-light uppercase tracking-widest text-sm">
           {message}
         </p>
         {details ? (
-          <p className="text-[#8C99A3] font-light text-xs tracking-[0.18em] uppercase">
+          <p className="text-ink-2 font-light text-xs tracking-[0.18em] uppercase">
             {details}
           </p>
         ) : null}
@@ -74,26 +75,30 @@ export default function App() {
   }
 
   // Preloader is on unless the CMS explicitly disables it.
-  const showPreloader = data.preloader?.isEnabled !== false && !preloaderDone;
+  const showPreloader = data.preloader?.enabled !== false && !preloaderDone;
 
   return (
     <>
-      <AnimatePresence>
-        {showPreloader && (
-          <Preloader
-            data={data.preloader}
-            onComplete={() => setPreloaderDone(true)}
-          />
-        )}
-      </AnimatePresence>
+      {showPreloader && (
+        <Preloader
+          data={data.preloader}
+          onComplete={() => setPreloaderDone(true)}
+        />
+      )}
 
       <SmoothScroll>
-        <main style={{ background: '#0C0C0C', overflowX: 'clip' }}>
+        <NavSection 
+          wordmark={data.preloader?.wordmark} 
+          links={data.footer?.links?.map(l => ({ label: l.label, href: l.url }))}
+        />
+        <main className="bg-bg text-ink overflow-x-clip font-body">
           <HeroSection data={data.hero ?? {}} />
           <MarqueeSection data={data.marquee ?? {}} />
           <AboutSection data={data.about ?? {}} />
           <ServicesSection data={data.services ?? {}} />
           <ProjectsSection data={data.projects ?? {}} />
+          <ContactSection data={data.contact ?? {}} />
+          <FooterSection data={data.footer ?? {}} />
         </main>
       </SmoothScroll>
     </>
