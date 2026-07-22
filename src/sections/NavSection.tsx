@@ -54,9 +54,14 @@ export default function NavSection({
         className="absolute bottom-0 left-0 w-full h-[1px] bg-line opacity-0"
       />
       
-      <div className="text-ink font-display font-bold tracking-tight">
-        {wordmark}
-      </div>
+      <a href="#" className="flex items-center gap-3 group text-ink font-display font-bold tracking-tight">
+        <img
+          src="/wblogo.jpg"
+          alt={wordmark || 'WIBISANA Logo'}
+          className="w-9 h-9 object-cover rounded-full border border-line/20 shadow-sm transition-transform group-hover:scale-105"
+        />
+        <span className="text-base font-semibold tracking-tight">{wordmark}</span>
+      </a>
 
       <nav className="hidden md:flex items-center gap-8">
         {links.map((link) => {

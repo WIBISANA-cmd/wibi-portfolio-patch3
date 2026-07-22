@@ -11,8 +11,15 @@ export default function FooterSection({ data }: { data: FooterData }) {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
         
         <Reveal yOffset={20}>
-          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-muted text-sm font-medium">
-            <span className="font-display uppercase tracking-widest text-bg">{tagline}</span>
+          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 text-muted text-sm font-medium">
+            <div className="flex items-center gap-2">
+              <img
+                src="/wblogo.jpg"
+                alt={tagline || 'WIBISANA Logo'}
+                className="w-7 h-7 object-cover rounded-full border border-line/20 shadow-sm"
+              />
+              <span className="font-display uppercase tracking-widest text-bg">{tagline}</span>
+            </div>
             <span className="hidden md:inline text-line/20">|</span>
             <span>{copyright}</span>
           </div>

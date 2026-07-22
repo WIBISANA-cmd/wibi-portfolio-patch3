@@ -38,6 +38,8 @@ function StatusScreen({
   );
 }
 
+import SEOHead from './components/SEOHead';
+
 export default function App() {
   // Every section renders exclusively from Sanity — no bundled fallback content.
   const { data, loading, error } = useLandingPage();
@@ -80,6 +82,7 @@ export default function App() {
 
   return (
     <>
+      <SEOHead seo={data?.seo} wordmark={data?.preloader?.wordmark} />
       {showPreloader && (
         <Preloader
           data={data.preloader}
