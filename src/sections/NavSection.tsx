@@ -59,16 +59,21 @@ export default function NavSection({
       </div>
 
       <nav className="hidden md:flex items-center gap-8">
-        {links.map((link) => (
-          <a
-            key={link.label}
-            href={link.href}
-            className="text-sm font-medium text-ink-2 hover:text-ink transition-colors relative group"
-          >
-            {link.label}
-            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-ink transition-all group-hover:w-full" />
-          </a>
-        ))}
+        {links.map((link) => {
+          const href = link.href
+            ? (link.href.startsWith('#') || link.href.startsWith('http') || link.href.startsWith('/') ? link.href : `#${link.href}`)
+            : '#';
+          return (
+            <a
+              key={link.label}
+              href={href}
+              className="text-sm font-medium text-ink-2 hover:text-ink transition-colors relative group"
+            >
+              {link.label}
+              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-ink transition-all group-hover:w-full" />
+            </a>
+          );
+        })}
         <a
           href="#contact"
           className="bg-ink-strong text-bg px-5 py-2 rounded-lg text-sm font-medium hover:bg-ink transition-colors"

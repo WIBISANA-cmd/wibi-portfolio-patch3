@@ -8,7 +8,10 @@ export default function HeroSection({ data }: { data: HeroData }) {
   const bgUrl = data.backgroundImage ? imageUrl(data.backgroundImage, 1200) : 'IMG_8382 2.JPG';
   const bgAlt = data.backgroundImage?.alt || 'AI Twin Subject';
   const ctaLabel = data.ctaLabel ?? 'Start a Demo';
-  const ctaHref = data.ctaHref ?? '#contact';
+  const rawCtaHref = data.ctaHref ?? '#contact';
+  const ctaHref = rawCtaHref.startsWith('#') || rawCtaHref.startsWith('http') || rawCtaHref.startsWith('/')
+    ? rawCtaHref
+    : `#${rawCtaHref}`;
 
   return (
     <section className="bg-gray-50 flex flex-col font-sans text-gray-900 overflow-hidden pt-24 min-h-[calc(100vh-80px)]">

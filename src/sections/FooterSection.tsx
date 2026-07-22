@@ -21,16 +21,21 @@ export default function FooterSection({ data }: { data: FooterData }) {
         {links.length > 0 && (
           <Reveal yOffset={20} delay={0.2}>
             <ul className="flex flex-wrap items-center justify-center gap-6 text-sm font-medium">
-              {links.map((link) => (
-                <li key={link.label}>
-                  <a 
-                    href={link.url}
-                    className="text-muted hover:text-bg transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
+              {links.map((link) => {
+                const href = link.url
+                  ? (link.url.startsWith('#') || link.url.startsWith('http') || link.url.startsWith('/') ? link.url : `#${link.url}`)
+                  : '#';
+                return (
+                  <li key={link.label}>
+                    <a 
+                      href={href}
+                      className="text-muted hover:text-bg transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </Reveal>
         )}
