@@ -52,37 +52,32 @@ const SERVICES = [
   {
     _id: 'service-01',
     orderNumber: 1,
-    title: '3D Modeling',
-    description:
-      'Creation of detailed objects, characters, or environments tailored to specific client needs, ideal for games, products, and visualizations.',
+    title: 'Frontend Development',
+    description: 'Building responsive, performant, and accessible user interfaces using modern frameworks like React, Vue, or Next.js.'
   },
   {
     _id: 'service-02',
     orderNumber: 2,
-    title: 'Rendering',
-    description:
-      'High-quality, photorealistic renders that showcase designs with custom lighting, textures, and materials to bring concepts to life.',
+    title: 'Backend Architecture',
+    description: 'Designing scalable APIs and databases using Node.js, Python, or Go to power complex web applications.'
   },
   {
     _id: 'service-03',
     orderNumber: 3,
-    title: 'Motion Design',
-    description:
-      'Dynamic animations and motion graphics that add energy and storytelling to brands, products, and digital experiences.',
+    title: 'Product Strategy',
+    description: 'Collaborating with stakeholders to define product roadmaps, user journeys, and core features that drive business value.'
   },
   {
     _id: 'service-04',
     orderNumber: 4,
-    title: 'Branding',
-    description:
-      'Crafting cohesive visual identities — from logos to full brand systems — that communicate a clear and memorable presence.',
+    title: 'UI/UX Implementation',
+    description: 'Translating high-fidelity designs into pixel-perfect, interactive web experiences with smooth animations and transitions.'
   },
   {
     _id: 'service-05',
     orderNumber: 5,
-    title: 'Web Design',
-    description:
-      'Designing clean, modern, and conversion-focused websites with attention to layout, typography, and user experience.',
+    title: 'System Integration',
+    description: 'Connecting various third-party services, payment gateways, and CMS platforms into a unified product ecosystem.'
   },
 ];
 
@@ -92,26 +87,26 @@ const EXPERIENCES = [
   {
     _id: 'experience-01',
     order: 1,
-    role: 'Senior Motion Designer',
-    company: 'Nextlevel Studio',
+    role: 'Senior Product Engineer',
+    company: 'TechFlow Solutions',
     duration: '2023 - Present',
-    description: 'Leading motion design projects, collaborating with cross-functional teams to deliver high-quality animations and visual effects.'
+    description: 'Leading the development of core product features, optimizing performance, and architecting scalable frontend systems.'
   },
   {
     _id: 'experience-02',
     order: 2,
-    role: '3D Artist',
-    company: 'Aura Agency',
-    duration: '2021 - 2023',
-    description: 'Created 3D models and environments for various commercial projects and games.'
+    role: 'Fullstack Developer',
+    company: 'Innovate Digital',
+    duration: '2020 - 2023',
+    description: 'Built and maintained end-to-end web applications, integrating complex APIs and managing database structures.'
   },
   {
     _id: 'experience-03',
     order: 3,
-    role: 'Web Designer',
-    company: 'Freelance',
-    duration: '2019 - 2021',
-    description: 'Designed and developed websites for small businesses, focusing on user experience and brand identity.'
+    role: 'Frontend Web Developer',
+    company: 'Creative Agency',
+    duration: '2018 - 2020',
+    description: 'Developed responsive websites with a strong focus on user experience, web accessibility, and performance optimization.'
   }
 ];
 
@@ -164,9 +159,9 @@ const MARQUEE_IMAGES = [
 /* ------------------------------------------------------------------ HERO */
 
 const HERO = {
-  eyebrow: 'Design & Motion Studio',
-  headline: 'Hi, I’m Wibi',
-  subheadline: 'A digital creator driven by crafting striking and unforgettable interactive experiences.',
+  eyebrow: 'Web & Product Developer',
+  headline: 'Building digital\nproducts that\nscale.',
+  subheadline: 'I build robust web applications focused on great user experience, performance, and clean architecture.',
   portraitUrl:
     'https://shrug-person-78902957.figma.site/_components/v2/d24c01ad3a56fc65e942a1f501eb73db42d7cf9a/Rectangle_40443.81459862.png',
   ctaLabel: 'See my work',
@@ -177,11 +172,11 @@ const HERO = {
 
 const ABOUT = {
   heading: 'About me',
-  body: "With more than five years of experience in design, I focus on branding, web design, and user experience. I truly enjoy working with businesses that aim to stand out and present their best image. Let's build something incredible together!",
+  body: "With over 5 years of experience in web development, I focus on building products that solve real problems. I truly enjoy translating complex requirements into simple, beautiful, and performant web applications. Let's build something incredible together!",
   imageUrl: 'https://shrug-person-78902957.figma.site/_components/v2/ebb2b8f25d8e24d5f0a5ca8af4c950de81aa2fd7/Group_134-1.2e04f3ce.png',
   stats: [
     { value: '5+', label: 'Years Experience' },
-    { value: '40+', label: 'Projects Completed' },
+    { value: '40+', label: 'Products Shipped' },
   ]
 };
 
@@ -287,8 +282,8 @@ async function run() {
       ]
     },
     seo: {
-      title: 'Wibi | Design & Motion Studio',
-      description: 'A digital creator driven by crafting striking and unforgettable interactive experiences.',
+      title: 'Wibi | Web & Product Developer',
+      description: 'I build robust web applications focused on great user experience, performance, and clean architecture.',
       ogImage: portrait
     }
   });
