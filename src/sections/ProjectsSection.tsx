@@ -12,7 +12,7 @@ function ProjectCard({ project, index }: { project: ProjectDoc; index: number })
   const speed = speeds[index % 3];
 
   return (
-    <Reveal delay={index * 0.1} yOffset={30} className="h-full">
+    <Reveal delay={index * 0.1} yOffset={30} scale={0.96} className="h-full">
       <div data-speed={speed} className="bg-surface rounded-3xl md:rounded-[2rem] border border-line shadow-sm overflow-hidden flex flex-col h-full group">
         
         {/* Media Container (Top) */}

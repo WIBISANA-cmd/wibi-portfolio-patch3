@@ -5,6 +5,7 @@ interface NavSectionProps {
   wordmark?: string;
   links?: { label: string; href: string }[];
   logoUrl?: string;
+  ready?: boolean;
 }
 
 export default function NavSection({
@@ -15,6 +16,7 @@ export default function NavSection({
     { label: 'Projects', href: '#projects' },
   ],
   logoUrl,
+  ready = true,
 }: NavSectionProps) {
   const headerRef = useRef<HTMLElement>(null);
   const borderRef = useRef<HTMLDivElement>(null);
@@ -24,6 +26,12 @@ export default function NavSection({
       const mm = gsap.matchMedia();
 
       mm.add('(prefers-reduced-motion: no-preference)', () => {
+        // Entrance — held below the preloader until it hands off.
+        gsap.set(headerRef.current, { opacity: 0, y: -16 });
+        if (ready) {
+          gsap.to(headerRef.current, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 });
+        }
+
         // Toggle solid background and border on scroll
         ScrollTrigger.create({
           start: 'top -50',
@@ -40,9 +48,13 @@ export default function NavSection({
         });
       });
 
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(headerRef.current, { opacity: 1, y: 0 });
+      });
+
       return () => mm.revert();
     },
-    { scope: headerRef }
+    { scope: headerRef, dependencies: [ready] }
   );
 
   return (

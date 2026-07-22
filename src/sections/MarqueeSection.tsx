@@ -35,6 +35,17 @@ export default function MarqueeSection({ data }: { data: MarqueeData }) {
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         if (!row1Ref.current || !row2Ref.current) return;
 
+        gsap.from(sectionRef.current, {
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 90%',
+            toggleActions: 'play none none none',
+          },
+        });
+
         const row1Width = row1Ref.current.scrollWidth / 3;
         const row2Width = row2Ref.current.scrollWidth / 3;
 
@@ -79,6 +90,10 @@ export default function MarqueeSection({ data }: { data: MarqueeData }) {
             });
           },
         });
+      });
+
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(sectionRef.current, { opacity: 1 });
       });
 
       return () => mm.revert();

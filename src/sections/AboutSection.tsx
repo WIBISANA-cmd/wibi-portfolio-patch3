@@ -105,7 +105,7 @@ export default function AboutSection({ data }: { data: AboutData }) {
           {/* Right Column: Media */}
           {mediaUrl && (
             <div className="lg:col-span-5 w-full mt-12 lg:mt-0 lg:pt-16" data-speed="0.95">
-              <Reveal yOffset={40} duration={1.2}>
+              <Reveal yOffset={40} duration={1.2} scale={0.94}>
                 <div className="rounded-2xl overflow-hidden bg-surface-2 aspect-[4/5] w-full">
                   <ParallaxMedia
                     src={mediaUrl}

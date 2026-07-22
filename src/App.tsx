@@ -79,6 +79,9 @@ export default function App() {
 
   // Preloader is on unless the CMS explicitly disables it.
   const showPreloader = data.preloader?.enabled !== false && !preloaderDone;
+  // Nav and Hero stay hidden behind the preloader overlay, then animate in
+  // together once it hands off — otherwise their entrance would play unseen.
+  const contentReady = !showPreloader;
   const logoUrl = imageUrl(data.branding?.logo, 200);
   const faviconUrl = imageUrl(data.branding?.favicon, 256);
 
@@ -97,9 +100,10 @@ export default function App() {
           wordmark={data.preloader?.wordmark}
           links={data.navigation?.links?.map(l => ({ label: l.label, href: l.url }))}
           logoUrl={logoUrl}
+          ready={contentReady}
         />
         <main className="bg-bg text-ink overflow-x-clip font-body">
-          <HeroSection data={data.hero ?? {}} />
+          <HeroSection data={data.hero ?? {}} ready={contentReady} />
           <MarqueeSection data={data.marquee ?? {}} />
           <AboutSection data={data.about ?? {}} />
           <ServicesSection data={data.services ?? {}} />

@@ -8,6 +8,7 @@ interface RevealProps {
   yOffset?: number;
   duration?: number;
   stagger?: number;
+  scale?: number;
 }
 
 export default function Reveal({
@@ -17,6 +18,7 @@ export default function Reveal({
   yOffset = 30,
   duration = 0.8,
   stagger = 0,
+  scale = 1,
 }: RevealProps) {
   const container = useRef<HTMLDivElement>(null);
 
@@ -28,6 +30,7 @@ export default function Reveal({
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         gsap.from(container.current, {
           y: yOffset,
+          scale: scale,
           opacity: 0,
           duration: duration,
           delay: delay,
@@ -42,7 +45,7 @@ export default function Reveal({
       });
 
       mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.set(container.current, { opacity: 1, y: 0 });
+        gsap.set(container.current, { opacity: 1, y: 0, scale: 1 });
       });
 
       return () => mm.revert();
