@@ -47,6 +47,10 @@ export interface PreloaderData {
   durationMs?: number;
 }
 
+export interface NavigationData {
+  links?: { label: string; url: string }[];
+}
+
 export interface HeroData {
   eyebrow?: string;
   headline?: string;
@@ -101,6 +105,7 @@ export interface SEOData {
 
 export interface LandingPage {
   preloader?: PreloaderData;
+  navigation?: NavigationData;
   hero?: HeroData;
   marquee?: MarqueeData;
   about?: AboutData;

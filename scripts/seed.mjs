@@ -237,6 +237,13 @@ async function run() {
       wordmark: 'WIBISANA',
       durationMs: 2000
     },
+    navigation: {
+      links: [
+        { _key: 'n1', label: 'About', url: '#about' },
+        { _key: 'n2', label: 'Services', url: '#services' },
+        { _key: 'n3', label: 'Projects', url: '#projects' }
+      ]
+    },
     hero: {
       eyebrow: HERO.eyebrow,
       headline: HERO.headline,

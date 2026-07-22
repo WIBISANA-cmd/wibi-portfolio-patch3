@@ -6,6 +6,7 @@ export default defineType({
   type: 'document',
   groups: [
     { name: 'preloader', title: 'Preloader' },
+    { name: 'navigation', title: 'Navigation' },
     { name: 'hero', title: 'Hero' },
     { name: 'marquee', title: 'Marquee' },
     { name: 'about', title: 'About' },
@@ -28,6 +29,32 @@ export default defineType({
         defineField({ name: 'wordmark', title: 'Wordmark', type: 'string', initialValue: 'WIBISANA' }),
         defineField({ name: 'durationMs', title: 'Duration (ms)', type: 'number', initialValue: 2000 }),
       ]
+    }),
+
+    /* ---------------------------------------------------------- NAVIGATION */
+    defineField({
+      name: 'navigation',
+      title: 'Navigation Bar',
+      type: 'object',
+      group: 'navigation',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: 'links',
+          title: 'Nav Links',
+          description: 'Links shown in the main site navigation (e.g. About, Services, Projects).',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                { name: 'label', type: 'string', title: 'Label' },
+                { name: 'url', type: 'string', title: 'URL / Anchor' }
+              ]
+            }
+          ]
+        }),
+      ],
     }),
 
     /* ---------------------------------------------------------------- HERO */

@@ -88,9 +88,9 @@ export default function App() {
       )}
 
       <SmoothScroll>
-        <NavSection 
-          wordmark={data.preloader?.wordmark} 
-          links={data.footer?.links?.map(l => ({ label: l.label, href: l.url }))}
+        <NavSection
+          wordmark={data.preloader?.wordmark}
+          links={data.navigation?.links?.map(l => ({ label: l.label, href: l.url }))}
         />
         <main className="bg-bg text-ink overflow-x-clip font-body">
           <HeroSection data={data.hero ?? {}} />
