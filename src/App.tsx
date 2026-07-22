@@ -4,6 +4,7 @@ import HeroSection from './sections/HeroSection';
 import MarqueeSection from './sections/MarqueeSection';
 import AboutSection from './sections/AboutSection';
 import ServicesSection from './sections/ServicesSection';
+import ExperienceSection from './sections/ExperienceSection';
 import ProjectsSection from './sections/ProjectsSection';
 import ContactSection from './sections/ContactSection';
 import FooterSection from './sections/FooterSection';
@@ -96,6 +97,7 @@ export default function App() {
           <MarqueeSection data={data.marquee ?? {}} />
           <AboutSection data={data.about ?? {}} />
           <ServicesSection data={data.services ?? {}} />
+          <ExperienceSection data={data.experiences ?? {}} />
           <ProjectsSection data={data.projects ?? {}} />
           <ContactSection data={data.contact ?? {}} />
           <FooterSection data={data.footer ?? {}} />

@@ -13,6 +13,15 @@ export interface ServiceDoc {
   image?: SanityImage;
 }
 
+export interface ExperienceDoc {
+  _id: string;
+  role: string;
+  company: string;
+  duration: string;
+  description?: string;
+  order?: number;
+}
+
 export interface ProjectDoc {
   _id: string;
   title: string;
@@ -58,6 +67,11 @@ export interface ServicesData {
   services?: ServiceDoc[];
 }
 
+export interface ExperiencesData {
+  heading?: string;
+  experiences?: ExperienceDoc[];
+}
+
 export interface ProjectsData {
   projects?: ProjectDoc[];
 }
@@ -91,6 +105,7 @@ export interface LandingPage {
   marquee?: MarqueeData;
   about?: AboutData;
   services?: ServicesData;
+  experiences?: ExperiencesData;
   projects?: ProjectsData;
   contact?: ContactData;
   footer?: FooterData;

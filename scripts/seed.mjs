@@ -86,6 +86,35 @@ const SERVICES = [
   },
 ];
 
+/* ----------------------------------------------------------- EXPERIENCES */
+
+const EXPERIENCES = [
+  {
+    _id: 'experience-01',
+    order: 1,
+    role: 'Senior Motion Designer',
+    company: 'Nextlevel Studio',
+    duration: '2023 - Present',
+    description: 'Leading motion design projects, collaborating with cross-functional teams to deliver high-quality animations and visual effects.'
+  },
+  {
+    _id: 'experience-02',
+    order: 2,
+    role: '3D Artist',
+    company: 'Aura Agency',
+    duration: '2021 - 2023',
+    description: 'Created 3D models and environments for various commercial projects and games.'
+  },
+  {
+    _id: 'experience-03',
+    order: 3,
+    role: 'Web Designer',
+    company: 'Freelance',
+    duration: '2019 - 2021',
+    description: 'Designed and developed websites for small businesses, focusing on user experience and brand identity.'
+  }
+];
+
 /* --------------------------------------------------------------- PROJECTS */
 
 const PROJECTS = [
@@ -165,6 +194,12 @@ async function run() {
     console.log(`  ✓ ${doc._id}`);
   }
 
+  console.log('\nExperiences:');
+  for (const doc of EXPERIENCES) {
+    await client.createOrReplace({ _type: 'experience', ...doc });
+    console.log(`  ✓ ${doc._id}`);
+  }
+
   console.log('\nProjects (uploading images, this can take a moment):');
   const projectDocs = [];
   for (const p of PROJECTS) {
@@ -226,6 +261,10 @@ async function run() {
     },
     services: {
       services: SERVICES.map((s) => ({ _type: 'reference', _ref: s._id, _key: s._id })),
+    },
+    experiences: {
+      heading: 'Work Experience',
+      experiences: EXPERIENCES.map((e) => ({ _type: 'reference', _ref: e._id, _key: e._id })),
     },
     projects: {
       projects: projectDocs.map((p) => ({ _type: 'reference', _ref: p._id, _key: p._id })),

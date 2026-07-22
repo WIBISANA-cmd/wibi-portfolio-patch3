@@ -10,6 +10,7 @@ export default defineType({
     { name: 'marquee', title: 'Marquee' },
     { name: 'about', title: 'About' },
     { name: 'services', title: 'Services' },
+    { name: 'experiences', title: 'Experiences' },
     { name: 'projects', title: 'Projects' },
     { name: 'contact', title: 'Contact' },
     { name: 'footer', title: 'Footer' },
@@ -121,6 +122,24 @@ export default defineType({
           title: 'Services',
           type: 'array',
           of: [{ type: 'reference', to: [{ type: 'service' }] }],
+        }),
+      ],
+    }),
+
+    /* --------------------------------------------------------- EXPERIENCES */
+    defineField({
+      name: 'experiences',
+      title: 'Experiences Section',
+      type: 'object',
+      group: 'experiences',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string', initialValue: 'Work Experience' }),
+        defineField({
+          name: 'experiences',
+          title: 'Experiences',
+          type: 'array',
+          of: [{ type: 'reference', to: [{ type: 'experience' }] }],
         }),
       ],
     }),

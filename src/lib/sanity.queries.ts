@@ -43,6 +43,17 @@ export const landingPageQuery = /* groq */ `
       image
     }
   },
+  experiences{
+    heading,
+    experiences[]->{
+      _id,
+      role,
+      company,
+      duration,
+      description,
+      order
+    }
+  },
   projects{
     projects[]->{
       _id,
