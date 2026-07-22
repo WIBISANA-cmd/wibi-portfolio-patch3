@@ -5,6 +5,7 @@ export default defineType({
   title: 'Landing Page',
   type: 'document',
   groups: [
+    { name: 'branding', title: 'Branding' },
     { name: 'preloader', title: 'Preloader' },
     { name: 'navigation', title: 'Navigation' },
     { name: 'hero', title: 'Hero' },
@@ -18,6 +19,32 @@ export default defineType({
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
+    /* ------------------------------------------------------------ BRANDING */
+    defineField({
+      name: 'branding',
+      title: 'Branding',
+      type: 'object',
+      group: 'branding',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: 'logo',
+          title: 'Logo',
+          description: 'Shown in the nav bar and footer.',
+          type: 'image',
+          options: { hotspot: true },
+          fields: [{ name: 'alt', type: 'string', title: 'Alt text', validation: (rule) => rule.required() }]
+        }),
+        defineField({
+          name: 'favicon',
+          title: 'Favicon',
+          description: 'Browser tab icon. Use a square image (e.g. 512x512).',
+          type: 'image',
+          fields: [{ name: 'alt', type: 'string', title: 'Alt text', validation: (rule) => rule.required() }]
+        }),
+      ],
+    }),
+
     /* ----------------------------------------------------------- PRELOADER */
     defineField({
       name: 'preloader',

@@ -16,6 +16,10 @@ export class LandingPageFetchError extends Error {
  */
 export const landingPageQuery = /* groq */ `
 *[_type == "landingPage"][0]{
+  branding{
+    logo,
+    favicon
+  },
   preloader,
   navigation{
     links

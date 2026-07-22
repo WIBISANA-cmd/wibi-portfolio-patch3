@@ -4,6 +4,7 @@ import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap';
 interface NavSectionProps {
   wordmark?: string;
   links?: { label: string; href: string }[];
+  logoUrl?: string;
 }
 
 export default function NavSection({
@@ -13,6 +14,7 @@ export default function NavSection({
     { label: 'Services', href: '#services' },
     { label: 'Projects', href: '#projects' },
   ],
+  logoUrl,
 }: NavSectionProps) {
   const headerRef = useRef<HTMLElement>(null);
   const borderRef = useRef<HTMLDivElement>(null);
@@ -56,7 +58,7 @@ export default function NavSection({
       
       <a href="#" className="flex items-center gap-3 group text-ink font-display font-bold tracking-tight">
         <img
-          src="/wblogo.jpg"
+          src={logoUrl || '/wblogo.jpg'}
           alt={wordmark || 'WIBISANA Logo'}
           className="w-9 h-9 object-cover rounded-full border border-line/20 shadow-sm transition-transform group-hover:scale-105"
         />

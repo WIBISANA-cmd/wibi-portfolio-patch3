@@ -47,6 +47,11 @@ export interface PreloaderData {
   durationMs?: number;
 }
 
+export interface BrandingData {
+  logo?: SanityImage;
+  favicon?: SanityImage;
+}
+
 export interface NavigationData {
   links?: { label: string; url: string }[];
 }
@@ -104,6 +109,7 @@ export interface SEOData {
 }
 
 export interface LandingPage {
+  branding?: BrandingData;
   preloader?: PreloaderData;
   navigation?: NavigationData;
   hero?: HeroData;

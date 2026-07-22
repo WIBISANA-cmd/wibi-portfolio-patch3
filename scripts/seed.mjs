@@ -4,6 +4,8 @@
 // _id and createOrReplace, so re-running just updates the same records.
 import { createClient } from '@sanity/client';
 import { config as loadEnv } from 'dotenv';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 
 loadEnv();
 
@@ -44,6 +46,12 @@ async function uploadImage(url, filename, alt) {
   const ref = { _type: 'image', asset: { _type: 'reference', _ref: asset._id } };
   assetCache.set(url, ref);
   return { ...ref, alt };
+}
+
+async function uploadLocalImage(filePath, filename, alt) {
+  const buffer = readFileSync(filePath);
+  const asset = await client.assets.upload('image', buffer, { filename, contentType: 'image/jpeg' });
+  return { _type: 'image', asset: { _type: 'reference', _ref: asset._id }, alt };
 }
 
 /* --------------------------------------------------------------- SERVICES */
@@ -227,11 +235,19 @@ async function run() {
   console.log('\nHero + About assets:');
   const portrait = await uploadImage(HERO.portraitUrl, 'hero-portrait.png', 'Wibi Portrait');
   const aboutMedia = await uploadImage(ABOUT.imageUrl, 'about-media.png', 'About Media Image');
-  
+
+  console.log('\nBranding assets:');
+  const logoPath = path.join(process.cwd(), 'public', 'wblogo.jpg');
+  const logo = await uploadLocalImage(logoPath, 'wblogo.jpg', 'WIBISANA Logo');
+
   console.log('\nLanding page singleton:');
   await client.createOrReplace({
     _id: 'landingPage',
     _type: 'landingPage',
+    branding: {
+      logo,
+      favicon: logo,
+    },
     preloader: {
       enabled: true,
       wordmark: 'WIBISANA',

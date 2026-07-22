@@ -1,7 +1,7 @@
 import Reveal from '../components/Reveal';
 import type { FooterData } from '../lib/sanity.types';
 
-export default function FooterSection({ data }: { data: FooterData }) {
+export default function FooterSection({ data, logoUrl }: { data: FooterData; logoUrl?: string }) {
   const tagline = data.tagline || 'Wibisana';
   const copyright = data.copyright || '© 2026 Wibisana. All rights reserved.';
   const links = data.links || [];
@@ -14,7 +14,7 @@ export default function FooterSection({ data }: { data: FooterData }) {
           <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 text-muted text-sm font-medium">
             <div className="flex items-center gap-2">
               <img
-                src="/wblogo.jpg"
+                src={logoUrl || '/wblogo.jpg'}
                 alt={tagline || 'WIBISANA Logo'}
                 className="w-7 h-7 object-cover rounded-full border border-line/20 shadow-sm"
               />

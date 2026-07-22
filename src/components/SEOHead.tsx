@@ -5,9 +5,10 @@ import { imageUrl } from '../lib/sanity.client';
 interface SEOHeadProps {
   seo?: SEOData;
   wordmark?: string;
+  faviconUrl?: string;
 }
 
-export default function SEOHead({ seo, wordmark = 'WIBISANA' }: SEOHeadProps) {
+export default function SEOHead({ seo, wordmark = 'WIBISANA', faviconUrl }: SEOHeadProps) {
   useEffect(() => {
     const title = seo?.title || `${wordmark} — Portfolio & Web Solutions`;
     const description =
@@ -22,6 +23,18 @@ export default function SEOHead({ seo, wordmark = 'WIBISANA' }: SEOHeadProps) {
     }
 
     document.title = title;
+
+    if (faviconUrl) {
+      ['icon', 'shortcut icon', 'apple-touch-icon'].forEach((rel) => {
+        let link = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null;
+        if (!link) {
+          link = document.createElement('link');
+          link.setAttribute('rel', rel);
+          document.head.appendChild(link);
+        }
+        link.setAttribute('href', faviconUrl);
+      });
+    }
 
     // Helper function to update or create meta tags
     const setMetaTag = (selector: string, attribute: string, value: string) => {
@@ -54,7 +67,7 @@ export default function SEOHead({ seo, wordmark = 'WIBISANA' }: SEOHeadProps) {
     setMetaTag('meta[name="twitter:title"]', 'content', title);
     setMetaTag('meta[name="twitter:description"]', 'content', description);
     setMetaTag('meta[name="twitter:image"]', 'content', ogImageUrl);
-  }, [seo, wordmark]);
+  }, [seo, wordmark, faviconUrl]);
 
   return null;
 }

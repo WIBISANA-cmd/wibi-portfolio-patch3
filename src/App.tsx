@@ -11,7 +11,7 @@ import FooterSection from './sections/FooterSection';
 import SmoothScroll from './components/SmoothScroll';
 import Preloader from './components/Preloader';
 import { useLandingPage } from './lib/useLandingPage';
-import { isSanityConfigured, sanityConfig } from './lib/sanity.client';
+import { isSanityConfigured, sanityConfig, imageUrl } from './lib/sanity.client';
 
 function StatusScreen({
   message,
@@ -79,10 +79,12 @@ export default function App() {
 
   // Preloader is on unless the CMS explicitly disables it.
   const showPreloader = data.preloader?.enabled !== false && !preloaderDone;
+  const logoUrl = imageUrl(data.branding?.logo, 200);
+  const faviconUrl = imageUrl(data.branding?.favicon, 256);
 
   return (
     <>
-      <SEOHead seo={data?.seo} wordmark={data?.preloader?.wordmark} />
+      <SEOHead seo={data?.seo} wordmark={data?.preloader?.wordmark} faviconUrl={faviconUrl} />
       {showPreloader && (
         <Preloader
           data={data.preloader}
@@ -94,6 +96,7 @@ export default function App() {
         <NavSection
           wordmark={data.preloader?.wordmark}
           links={data.navigation?.links?.map(l => ({ label: l.label, href: l.url }))}
+          logoUrl={logoUrl}
         />
         <main className="bg-bg text-ink overflow-x-clip font-body">
           <HeroSection data={data.hero ?? {}} />
@@ -103,7 +106,7 @@ export default function App() {
           <ExperienceSection data={data.experiences ?? {}} />
           <ProjectsSection data={data.projects ?? {}} />
           <ContactSection data={data.contact ?? {}} />
-          <FooterSection data={data.footer ?? {}} />
+          <FooterSection data={data.footer ?? {}} logoUrl={logoUrl} />
         </main>
       </SmoothScroll>
     </>
