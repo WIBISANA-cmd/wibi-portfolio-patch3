@@ -50,6 +50,16 @@ export const landingPageQuery = /* groq */ `
       image
     }
   },
+  skills{
+    heading,
+    skills[]->{
+      _id,
+      name,
+      category,
+      proficiency,
+      order
+    }
+  },
   experiences{
     heading,
     experiences[]->{
@@ -82,6 +92,18 @@ export const landingPageQuery = /* groq */ `
     tagline,
     copyright,
     links
+  },
+  cv{
+    fullName,
+    jobTitle,
+    phone,
+    location,
+    website,
+    summary,
+    education,
+    certifications,
+    languages,
+    showDownloadButton
   },
   seo
 }`;

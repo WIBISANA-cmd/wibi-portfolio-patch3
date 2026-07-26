@@ -4,12 +4,14 @@ import HeroSection from './sections/HeroSection';
 import MarqueeSection from './sections/MarqueeSection';
 import AboutSection from './sections/AboutSection';
 import ServicesSection from './sections/ServicesSection';
+import SkillsSection from './sections/SkillsSection';
 import ExperienceSection from './sections/ExperienceSection';
 import ProjectsSection from './sections/ProjectsSection';
 import ContactSection from './sections/ContactSection';
 import FooterSection from './sections/FooterSection';
 import SmoothScroll from './components/SmoothScroll';
 import Preloader from './components/Preloader';
+import DownloadCVButton from './components/DownloadCVButton';
 import { useLandingPage } from './lib/useLandingPage';
 import { isSanityConfigured, sanityConfig, imageUrl } from './lib/sanity.client';
 
@@ -107,8 +109,24 @@ export default function App() {
           <MarqueeSection data={data.marquee ?? {}} />
           <AboutSection data={data.about ?? {}} />
           <ServicesSection data={data.services ?? {}} />
+          <SkillsSection data={data.skills ?? {}} />
           <ExperienceSection data={data.experiences ?? {}} />
           <ProjectsSection data={data.projects ?? {}} />
+          {data.cv?.showDownloadButton !== false && (
+            <section className="py-16 sm:py-20 bg-surface">
+              <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div className="flex flex-col gap-2">
+                  <h2 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-ink">
+                    Interested in my full resume?
+                  </h2>
+                  <p className="text-muted text-sm sm:text-base">
+                    Download my ATS-friendly CV as PDF.
+                  </p>
+                </div>
+                <DownloadCVButton data={data} />
+              </div>
+            </section>
+          )}
           <ContactSection data={data.contact ?? {}} />
           <FooterSection data={data.footer ?? {}} logoUrl={logoUrl} />
         </main>

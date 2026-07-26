@@ -38,6 +38,14 @@ export interface MarqueeImageDoc {
   label?: string;
 }
 
+export interface SkillDoc {
+  _id: string;
+  name: string;
+  category: string;
+  proficiency?: number;
+  order?: number;
+}
+
 /* ------------------------------------------------ landingPage singleton shape */
 
 export interface PreloaderData {
@@ -88,6 +96,11 @@ export interface MarqueeData {
   items?: MarqueeImageDoc[];
 }
 
+export interface SkillsData {
+  heading?: string;
+  skills?: SkillDoc[];
+}
+
 export interface ContactData {
   heading?: string;
   email?: string;
@@ -107,6 +120,37 @@ export interface SEOData {
   ogImage?: SanityImage;
 }
 
+export interface CVEducation {
+  degree?: string;
+  institution?: string;
+  year?: string;
+  description?: string;
+}
+
+export interface CVCertification {
+  name?: string;
+  issuer?: string;
+  year?: string;
+}
+
+export interface CVLanguage {
+  language?: string;
+  level?: string;
+}
+
+export interface CVData {
+  fullName?: string;
+  jobTitle?: string;
+  phone?: string;
+  location?: string;
+  website?: string;
+  summary?: string;
+  education?: CVEducation[];
+  certifications?: CVCertification[];
+  languages?: CVLanguage[];
+  showDownloadButton?: boolean;
+}
+
 export interface LandingPage {
   branding?: BrandingData;
   preloader?: PreloaderData;
@@ -115,9 +159,11 @@ export interface LandingPage {
   marquee?: MarqueeData;
   about?: AboutData;
   services?: ServicesData;
+  skills?: SkillsData;
   experiences?: ExperiencesData;
   projects?: ProjectsData;
   contact?: ContactData;
   footer?: FooterData;
+  cv?: CVData;
   seo?: SEOData;
 }

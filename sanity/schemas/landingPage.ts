@@ -12,10 +12,12 @@ export default defineType({
     { name: 'marquee', title: 'Marquee' },
     { name: 'about', title: 'About' },
     { name: 'services', title: 'Services' },
+    { name: 'skills', title: 'Skills' },
     { name: 'experiences', title: 'Experiences' },
     { name: 'projects', title: 'Projects' },
     { name: 'contact', title: 'Contact' },
     { name: 'footer', title: 'Footer' },
+    { name: 'cv', title: 'CV / Resume' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
@@ -180,6 +182,24 @@ export default defineType({
       ],
     }),
 
+    /* -------------------------------------------------------------- SKILLS */
+    defineField({
+      name: 'skills',
+      title: 'Skills Section',
+      type: 'object',
+      group: 'skills',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string', initialValue: 'Skills & Expertise' }),
+        defineField({
+          name: 'skills',
+          title: 'Skills',
+          type: 'array',
+          of: [{ type: 'reference', to: [{ type: 'skill' }] }],
+        }),
+      ],
+    }),
+
     /* --------------------------------------------------------- EXPERIENCES */
     defineField({
       name: 'experiences',
@@ -266,6 +286,75 @@ export default defineType({
               ]
             }
           ]
+        }),
+      ],
+    }),
+
+    /* ---------------------------------------------------------- CV / RESUME */
+    defineField({
+      name: 'cv',
+      title: 'CV / Resume Settings',
+      description: 'Configure the downloadable ATS-friendly CV. Data is pulled dynamically from other sections.',
+      type: 'object',
+      group: 'cv',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({ name: 'fullName', title: 'Full Name', type: 'string' }),
+        defineField({ name: 'jobTitle', title: 'Job Title / Headline', type: 'string' }),
+        defineField({ name: 'phone', title: 'Phone Number', type: 'string' }),
+        defineField({ name: 'location', title: 'Location', type: 'string' }),
+        defineField({ name: 'website', title: 'Website URL', type: 'string' }),
+        defineField({ name: 'summary', title: 'Professional Summary', type: 'text', rows: 4 }),
+        defineField({
+          name: 'education',
+          title: 'Education',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                { name: 'degree', type: 'string', title: 'Degree' },
+                { name: 'institution', type: 'string', title: 'Institution' },
+                { name: 'year', type: 'string', title: 'Year / Duration' },
+                { name: 'description', type: 'text', title: 'Description' },
+              ],
+            },
+          ],
+        }),
+        defineField({
+          name: 'certifications',
+          title: 'Certifications',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                { name: 'name', type: 'string', title: 'Certification Name' },
+                { name: 'issuer', type: 'string', title: 'Issuing Organization' },
+                { name: 'year', type: 'string', title: 'Year' },
+              ],
+            },
+          ],
+        }),
+        defineField({
+          name: 'languages',
+          title: 'Languages',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                { name: 'language', type: 'string', title: 'Language' },
+                { name: 'level', type: 'string', title: 'Proficiency Level' },
+              ],
+            },
+          ],
+        }),
+        defineField({
+          name: 'showDownloadButton',
+          title: 'Show Download CV Button',
+          type: 'boolean',
+          initialValue: true,
         }),
       ],
     }),
