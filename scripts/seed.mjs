@@ -173,6 +173,63 @@ const HERO = {
   ctaHref: '#projects',
 };
 
+/* ------------------------------------------------------------------ SKILLS */
+
+const SKILLS = [
+  { _id: 'skill-01', name: 'React / Next.js', category: 'Frontend', proficiency: 95, order: 1 },
+  { _id: 'skill-02', name: 'TypeScript', category: 'Frontend', proficiency: 90, order: 2 },
+  { _id: 'skill-03', name: 'Tailwind CSS', category: 'Frontend', proficiency: 95, order: 3 },
+  { _id: 'skill-04', name: 'GSAP Animation', category: 'Frontend', proficiency: 85, order: 4 },
+  { _id: 'skill-05', name: 'Vue.js', category: 'Frontend', proficiency: 80, order: 5 },
+
+  { _id: 'skill-06', name: 'Node.js / Express', category: 'Backend', proficiency: 88, order: 1 },
+  { _id: 'skill-07', name: 'PostgreSQL / Prisma', category: 'Backend', proficiency: 82, order: 2 },
+  { _id: 'skill-08', name: 'REST & GraphQL APIs', category: 'Backend', proficiency: 90, order: 3 },
+  { _id: 'skill-09', name: 'Sanity CMS (GROQ)', category: 'Backend', proficiency: 85, order: 4 },
+
+  { _id: 'skill-10', name: 'Git & GitHub Workflow', category: 'Tools & DevOps', proficiency: 92, order: 1 },
+  { _id: 'skill-11', name: 'Docker / Dokploy', category: 'Tools & DevOps', proficiency: 78, order: 2 },
+  { _id: 'skill-12', name: 'Figma to Code', category: 'Tools & DevOps', proficiency: 90, order: 3 },
+  { _id: 'skill-13', name: 'Vite / Webpack', category: 'Tools & DevOps', proficiency: 85, order: 4 },
+];
+
+const CV_DATA = {
+  fullName: 'Wibisana',
+  jobTitle: 'Senior Frontend & Web Developer',
+  phone: '+62 812-3456-7890',
+  location: 'Jakarta, Indonesia',
+  website: 'https://wibisana.dev',
+  summary: 'Experienced Web Developer with 5+ years of expertise in building high-performance, accessible, and interactive web applications using React, TypeScript, and modern frontend tools. Strong background in UI design systems and headless CMS integrations.',
+  education: [
+    {
+      _key: 'edu-1',
+      degree: 'B.S. in Computer Science',
+      institution: 'State University',
+      year: '2016 - 2020',
+      description: 'Graduated with Honors. Focused on Software Engineering and Web Technologies.',
+    },
+  ],
+  certifications: [
+    {
+      _key: 'cert-1',
+      name: 'AWS Certified Cloud Practitioner',
+      issuer: 'Amazon Web Services',
+      year: '2023',
+    },
+    {
+      _key: 'cert-2',
+      name: 'Meta Front-End Developer Professional Certificate',
+      issuer: 'Coursera / Meta',
+      year: '2022',
+    },
+  ],
+  languages: [
+    { _key: 'lang-1', language: 'Indonesian', level: 'Native' },
+    { _key: 'lang-2', language: 'English', level: 'Full Professional' },
+  ],
+  showDownloadButton: true,
+};
+
 /* ----------------------------------------------------------------- ABOUT */
 
 const ABOUT = {
@@ -192,6 +249,14 @@ async function run() {
   for (const doc of SERVICES) {
     await client.createOrReplace({ _type: 'service', ...doc });
     console.log(`  ✓ ${doc._id}`);
+  }
+
+  console.log('\nSkills:');
+  const skillDocs = [];
+  for (const s of SKILLS) {
+    await client.createOrReplace({ _type: 'skill', ...s });
+    skillDocs.push(s);
+    console.log(`  ✓ ${s._id} (${s.name})`);
   }
 
   console.log('\nExperiences:');
@@ -276,6 +341,10 @@ async function run() {
     services: {
       services: SERVICES.map((s) => ({ _type: 'reference', _ref: s._id, _key: s._id })),
     },
+    skills: {
+      heading: 'Skills & Expertise',
+      skills: SKILLS.map((s) => ({ _type: 'reference', _ref: s._id, _key: s._id })),
+    },
     experiences: {
       heading: 'Work Experience',
       experiences: EXPERIENCES.map((e) => ({ _type: 'reference', _ref: e._id, _key: e._id })),
@@ -300,6 +369,7 @@ async function run() {
         { _key: 'l2', label: 'Terms of Service', url: '#' }
       ]
     },
+    cv: CV_DATA,
     seo: {
       title: 'Wibi | Web & Product Developer',
       description: 'I build robust web applications focused on great user experience, performance, and clean architecture.',

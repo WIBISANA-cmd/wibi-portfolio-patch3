@@ -11,7 +11,8 @@
     "studio:build": "sanity build",
     "studio:deploy": "sanity deploy",
     "studio:deploy:prod": "sanity deploy --yes",
-    "seed": "node scripts/seed.mjs"
+    "seed": "node scripts/seed.mjs",
+    "seed:skills": "node scripts/seed-skills.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
