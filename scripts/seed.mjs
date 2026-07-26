@@ -126,7 +126,6 @@ const PROJECTS = [
     order: 1,
     techstack: ['React', 'Next.js', 'TailwindCSS', 'TypeScript'],
     title: 'Nextlevel Studio',
-    year: '2023',
     imageUrl:
       'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055451_e317bf2d-28d4-48cc-86b0-6f72f25b6327.png&w=1280&q=85',
   },
@@ -135,7 +134,6 @@ const PROJECTS = [
     order: 2,
     techstack: ['Vue.js', 'Figma', 'Node.js'],
     title: 'Aura Brand Identity',
-    year: '2024',
     imageUrl:
       'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055753_adc5dcbd-a8e6-49c0-b43a-9b030d835cea.png&w=1280&q=85',
   },
@@ -144,7 +142,6 @@ const PROJECTS = [
     order: 3,
     techstack: ['Three.js', 'WebGL', 'React'],
     title: 'Solaris Digital',
-    year: '2024',
     imageUrl:
       'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260412_055818_9d062121-ad7e-46b9-999a-1a6a692ef1ee.png&w=1280&q=85',
   },
@@ -212,7 +209,6 @@ async function run() {
       _type: 'project',
       order: p.order,
       techstack: p.techstack,
-      year: p.year,
       title: p.title,
       image,
     };

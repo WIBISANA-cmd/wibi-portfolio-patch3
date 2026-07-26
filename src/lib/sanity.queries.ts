@@ -66,7 +66,6 @@ export const landingPageQuery = /* groq */ `
       _id,
       title,
       techstack,
-      year,
       image,
       url,
       description,

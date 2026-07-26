@@ -36,18 +36,14 @@ function ProjectCard({ project, index }: { project: ProjectDoc; index: number })
             </h3>
             <div className="flex flex-wrap items-center gap-2 text-muted text-xs uppercase tracking-wider font-medium mt-1">
               {project.techstack && project.techstack.length > 0 && (
-                <>
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.techstack.map((tech, i) => (
-                      <span key={i} className="px-2 py-0.5 rounded-md bg-surface-2 border border-line text-[10px] lowercase font-mono text-ink/80">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                  <span className="w-1 h-1 rounded-full bg-line" />
-                </>
+                <div className="flex flex-wrap gap-1.5">
+                  {project.techstack.map((tech, i) => (
+                    <span key={i} className="px-2 py-0.5 rounded-md bg-surface-2 border border-line text-[10px] lowercase font-mono text-ink/80">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
               )}
-              <span>{project.year}</span>
             </div>
           </div>
 

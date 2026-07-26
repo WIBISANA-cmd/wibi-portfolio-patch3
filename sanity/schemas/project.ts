@@ -21,12 +21,6 @@ export default defineType({
       },
     }),
     defineField({
-      name: 'year',
-      title: 'Year',
-      type: 'string',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
       name: 'image',
       title: 'Image',
       type: 'image',

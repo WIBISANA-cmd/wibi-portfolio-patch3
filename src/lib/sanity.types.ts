@@ -26,7 +26,6 @@ export interface ProjectDoc {
   _id: string;
   title: string;
   techstack?: string[];
-  year: string;
   image: SanityImage;
   url?: string;
   description?: string;
