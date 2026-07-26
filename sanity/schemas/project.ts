@@ -12,10 +12,13 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'category',
-      title: 'Category',
-      type: 'string',
-      validation: (rule) => rule.required(),
+      name: 'techstack',
+      title: 'Techstack',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        layout: 'tags',
+      },
     }),
     defineField({
       name: 'year',
@@ -57,7 +60,7 @@ export default defineType({
   preview: {
     select: {
       title: 'title',
-      subtitle: 'category',
+      subtitle: 'techstack.0',
       media: 'image',
     },
   },

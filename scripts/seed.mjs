@@ -124,7 +124,7 @@ const PROJECTS = [
   {
     _id: 'project-01',
     order: 1,
-    category: 'Client',
+    techstack: ['React', 'Next.js', 'TailwindCSS', 'TypeScript'],
     title: 'Nextlevel Studio',
     year: '2023',
     imageUrl:
@@ -133,7 +133,7 @@ const PROJECTS = [
   {
     _id: 'project-02',
     order: 2,
-    category: 'Personal',
+    techstack: ['Vue.js', 'Figma', 'Node.js'],
     title: 'Aura Brand Identity',
     year: '2024',
     imageUrl:
@@ -142,7 +142,7 @@ const PROJECTS = [
   {
     _id: 'project-03',
     order: 3,
-    category: 'Client',
+    techstack: ['Three.js', 'WebGL', 'React'],
     title: 'Solaris Digital',
     year: '2024',
     imageUrl:
@@ -211,7 +211,7 @@ async function run() {
       _id: p._id,
       _type: 'project',
       order: p.order,
-      category: p.category,
+      techstack: p.techstack,
       year: p.year,
       title: p.title,
       image,

@@ -65,7 +65,7 @@ export const landingPageQuery = /* groq */ `
     projects[]->{
       _id,
       title,
-      category,
+      techstack,
       year,
       image,
       url,
