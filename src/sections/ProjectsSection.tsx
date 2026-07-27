@@ -2,9 +2,11 @@
 import Reveal from '../components/Reveal';
 import ParallaxMedia from '../components/ParallaxMedia';
 import { imageUrl } from '../lib/sanity.client';
+import { useLanguage } from '../lib/i18n';
 import type { ProjectsData, ProjectDoc } from '../lib/sanity.types';
 
 function ProjectCard({ project, index }: { project: ProjectDoc; index: number }) {
+  const { t } = useLanguage();
   const src = imageUrl(project.image, 800);
   const alt = project.image.alt || project.title;
 
@@ -55,11 +57,11 @@ function ProjectCard({ project, index }: { project: ProjectDoc; index: number })
                 rel="noopener noreferrer"
                 className="inline-flex w-full items-center justify-center border border-line rounded-full px-5 py-2.5 text-sm font-medium text-ink hover:bg-ink hover:text-bg transition-colors"
               >
-                View Project
+                {t('View Project')}
               </a>
             ) : (
               <span className="inline-flex w-full items-center justify-center border border-line rounded-full px-5 py-2.5 text-sm font-medium text-muted bg-surface-2">
-                Coming Soon
+                {t('Coming Soon')}
               </span>
             )}
           </div>
@@ -70,6 +72,7 @@ function ProjectCard({ project, index }: { project: ProjectDoc; index: number })
 }
 
 export default function ProjectsSection({ data }: { data: ProjectsData }) {
+  const { t } = useLanguage();
   const projects = data.projects ?? [];
 
   if (projects.length === 0) return null;
@@ -82,7 +85,7 @@ export default function ProjectsSection({ data }: { data: ProjectsData }) {
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative">
         <Reveal yOffset={30} className="mb-10 md:mb-16">
           <h2 className="text-muted font-medium uppercase tracking-widest text-sm md:text-base">
-            Selected Projects
+            {t('Selected Projects')}
           </h2>
         </Reveal>
 

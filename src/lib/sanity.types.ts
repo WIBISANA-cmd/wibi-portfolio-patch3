@@ -46,6 +46,14 @@ export interface SkillDoc {
   order?: number;
 }
 
+export interface TranslationDoc {
+  _id: string;
+  /** ISO code, e.g. "id". */
+  language: string;
+  label: string;
+  entries?: { from: string; to: string }[];
+}
+
 /* ------------------------------------------------ landingPage singleton shape */
 
 export interface PreloaderData {

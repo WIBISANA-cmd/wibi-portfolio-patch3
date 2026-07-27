@@ -1,5 +1,5 @@
 import { client, isSanityConfigured } from './sanity.client';
-import type { LandingPage } from './sanity.types';
+import type { LandingPage, TranslationDoc } from './sanity.types';
 
 export class LandingPageFetchError extends Error {
   constructor(message: string) {
@@ -108,14 +108,30 @@ export const landingPageQuery = /* groq */ `
   seo
 }`;
 
+/** Every published language dictionary, in document order. */
+export const translationsQuery = /* groq */ `
+*[_type == "translation" && defined(language)] | order(label asc){
+  _id,
+  language,
+  label,
+  entries[]{ from, to }
+}`;
+
+export interface LandingPagePayload {
+  page: LandingPage | null;
+  translations: TranslationDoc[];
+}
+
 /**
- * Fetch all landing page data. Returns `null` when Sanity isn't configured or
- * the document doesn't exist yet — callers then render bundled defaults.
+ * Fetch all landing page data plus the language dictionaries in one round trip.
+ * Returns an empty payload when Sanity isn't configured.
  */
-export async function getLandingPage(): Promise<LandingPage | null> {
-  if (!isSanityConfigured) return null;
+export async function getLandingPage(): Promise<LandingPagePayload> {
+  if (!isSanityConfigured) return { page: null, translations: [] };
   try {
-    return await client.fetch<LandingPage | null>(landingPageQuery);
+    return await client.fetch<LandingPagePayload>(
+      `{"page": ${landingPageQuery}, "translations": ${translationsQuery}}`
+    );
   } catch (err) {
     console.error('[sanity] Failed to fetch landing page:', err);
     const message =

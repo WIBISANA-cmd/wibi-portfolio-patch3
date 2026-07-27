@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import NavSection from './sections/NavSection';
 import HeroSection from './sections/HeroSection';
 import MarqueeSection from './sections/MarqueeSection';
@@ -14,6 +14,9 @@ import Preloader from './components/Preloader';
 import DownloadCVButton from './components/DownloadCVButton';
 import { useLandingPage } from './lib/useLandingPage';
 import { isSanityConfigured, sanityConfig, imageUrl } from './lib/sanity.client';
+import { LanguageProvider, useLanguage } from './lib/i18n';
+import { translate } from './lib/translate';
+import type { LandingPage } from './lib/sanity.types';
 
 function StatusScreen({
   message,
@@ -44,8 +47,7 @@ import SEOHead from './components/SEOHead';
 
 export default function App() {
   // Every section renders exclusively from Sanity — no bundled fallback content.
-  const { data, loading, error } = useLandingPage();
-  const [preloaderDone, setPreloaderDone] = useState(false);
+  const { data, translations, loading, error } = useLandingPage();
   const sanityDetails = `project=${sanityConfig.projectId || 'missing'} dataset=${sanityConfig.dataset} api=${sanityConfig.apiVersion}`;
 
   if (loading) return <StatusScreen message="Loading…" />;
@@ -78,6 +80,22 @@ export default function App() {
       />
     );
   }
+
+  return (
+    <LanguageProvider translations={translations}>
+      <Site source={data} />
+    </LanguageProvider>
+  );
+}
+
+/**
+ * Rendered inside the provider so the whole payload can be run through the
+ * active dictionary once — every section keeps reading plain `data`.
+ */
+function Site({ source }: { source: LandingPage }) {
+  const { dict, t } = useLanguage();
+  const data = useMemo(() => translate(source, dict), [source, dict]);
+  const [preloaderDone, setPreloaderDone] = useState(false);
 
   // Preloader is on unless the CMS explicitly disables it.
   const showPreloader = data.preloader?.enabled !== false && !preloaderDone;
@@ -117,10 +135,10 @@ export default function App() {
               <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="flex flex-col gap-2">
                   <h2 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-ink">
-                    Interested in my full resume?
+                    {t('Interested in my full resume?')}
                   </h2>
                   <p className="text-muted text-sm sm:text-base">
-                    Download my ATS-friendly CV as PDF.
+                    {t('Download my ATS-friendly CV as PDF.')}
                   </p>
                 </div>
                 <DownloadCVButton data={data} />

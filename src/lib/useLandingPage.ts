@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import { getLandingPage } from './sanity.queries';
-import type { LandingPage } from './sanity.types';
+import type { LandingPage, TranslationDoc } from './sanity.types';
 
 interface LandingPageState {
   data: LandingPage | null;
+  translations: TranslationDoc[];
   loading: boolean;
   error: string | null;
 }
 
-/** Fetches the landingPage document once on mount. */
+/** Fetches the landingPage document and the language dictionaries once on mount. */
 export function useLandingPage(): LandingPageState {
   const [data, setData] = useState<LandingPage | null>(null);
+  const [translations, setTranslations] = useState<TranslationDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +20,9 @@ export function useLandingPage(): LandingPageState {
     let active = true;
     getLandingPage()
       .then((result) => {
-        if (active) setData(result);
+        if (!active) return;
+        setData(result.page);
+        setTranslations(result.translations ?? []);
       })
       .catch((err) => {
         if (!active) return;
@@ -32,5 +36,5 @@ export function useLandingPage(): LandingPageState {
     };
   }, []);
 
-  return { data, loading, error };
+  return { data, translations, loading, error };
 }

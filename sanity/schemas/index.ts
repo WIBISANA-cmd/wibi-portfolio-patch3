@@ -4,5 +4,6 @@ import marqueeImage from './marqueeImage';
 import landingPage from './landingPage';
 import experience from './experience';
 import skill from './skill';
+import translation from './translation';
 
-export const schemaTypes = [landingPage, project, service, marqueeImage, experience, skill];
+export const schemaTypes = [landingPage, project, service, marqueeImage, experience, skill, translation];

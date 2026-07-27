@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { downloadCV } from '../lib/generateCV';
+import { useLanguage } from '../lib/i18n';
 import type { LandingPage } from '../lib/sanity.types';
 
 interface DownloadCVButtonProps {
@@ -9,6 +10,7 @@ interface DownloadCVButtonProps {
 
 export default function DownloadCVButton({ data, className = '' }: DownloadCVButtonProps) {
   const [generating, setGenerating] = useState(false);
+  const { t } = useLanguage();
 
   const handleClick = () => {
     setGenerating(true);
@@ -47,7 +49,7 @@ export default function DownloadCVButton({ data, className = '' }: DownloadCVBut
           d="M12 4v12m0 0l-4-4m4 4l4-4M4 18h16"
         />
       </svg>
-      <span>{generating ? 'Generating…' : 'Download CV'}</span>
+      <span>{generating ? t('Generating…') : t('Download CV')}</span>
     </button>
   );
 }

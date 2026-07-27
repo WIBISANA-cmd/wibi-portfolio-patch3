@@ -1,7 +1,9 @@
 import Reveal from '../components/Reveal';
+import { useLanguage } from '../lib/i18n';
 import type { ServicesData } from '../lib/sanity.types';
 
 export default function ServicesSection({ data }: { data: ServicesData }) {
+  const { t } = useLanguage();
   const services = data.services ?? [];
 
   if (services.length === 0) return null;
@@ -11,7 +13,7 @@ export default function ServicesSection({ data }: { data: ServicesData }) {
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <Reveal yOffset={30}>
           <h2 className="text-muted font-medium uppercase tracking-widest text-sm md:text-base mb-12 sm:mb-20" data-speed="1.1">
-            Services
+            {t('Services')}
           </h2>
         </Reveal>
 

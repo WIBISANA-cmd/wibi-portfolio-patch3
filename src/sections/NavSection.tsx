@@ -1,5 +1,7 @@
 import { useRef } from 'react';
 import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useLanguage } from '../lib/i18n';
 
 interface NavSectionProps {
   wordmark?: string;
@@ -20,6 +22,7 @@ export default function NavSection({
 }: NavSectionProps) {
   const headerRef = useRef<HTMLElement>(null);
   const borderRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   useGSAP(
     () => {
@@ -77,6 +80,7 @@ export default function NavSection({
         <span className="text-base font-semibold tracking-tight">{wordmark}</span>
       </a>
 
+      <div className="flex items-center gap-3 md:gap-6">
       <nav className="hidden md:flex items-center gap-8">
         {links.map((link) => {
           const href = link.href
@@ -97,14 +101,17 @@ export default function NavSection({
           href="#contact"
           className="bg-ink-strong text-bg px-5 py-2 rounded-lg text-sm font-medium hover:bg-ink transition-colors"
         >
-          Contact
+          {t('Contact')}
         </a>
       </nav>
 
+      <LanguageSwitcher />
+
       {/* Mobile Menu Button - Placeholder for actual mobile menu implementation */}
       <button className="md:hidden text-ink p-2">
-        Menu
+        {t('Menu')}
       </button>
+      </div>
     </header>
   );
 }

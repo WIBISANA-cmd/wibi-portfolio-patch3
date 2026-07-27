@@ -1,7 +1,9 @@
 import Reveal from '../components/Reveal';
+import { useLanguage } from '../lib/i18n';
 import type { ContactData } from '../lib/sanity.types';
 
 export default function ContactSection({ data }: { data: ContactData }) {
+  const { t } = useLanguage();
   const heading = data.heading || "Let's work together";
   const email = data.email || 'hello@example.com';
   const socials = data.socials || [];
@@ -26,7 +28,7 @@ export default function ContactSection({ data }: { data: ContactData }) {
                 className="group inline-flex flex-col items-start gap-2"
               >
                 <span className="text-muted text-sm uppercase tracking-widest font-medium">
-                  Drop a line
+                  {t('Drop a line')}
                 </span>
                 <span className="font-display text-2xl sm:text-3xl lg:text-4xl hover:text-bg/80 transition-colors relative">
                   {email}
@@ -42,7 +44,7 @@ export default function ContactSection({ data }: { data: ContactData }) {
               <div className="flex flex-col gap-6">
                 <Reveal yOffset={20}>
                   <h3 className="text-muted text-sm uppercase tracking-widest font-medium">
-                    Socials
+                    {t('Socials')}
                   </h3>
                 </Reveal>
                 <ul className="flex flex-col gap-4">
