@@ -1,5 +1,5 @@
 import { client, isSanityConfigured } from './sanity.client';
-import type { LandingPage, TranslationDoc } from './sanity.types';
+import type { LandingPage, ThemeSettingsDoc, TranslationDoc } from './sanity.types';
 
 export class LandingPageFetchError extends Error {
   constructor(message: string) {
@@ -22,12 +22,19 @@ export const landingPageQuery = /* groq */ `
   },
   preloader,
   navigation{
+    label,
+    sublabel,
     links
   },
   hero{
-    eyebrow,
+    backgroundWord,
     headline,
+    name,
+    eyebrow,
     subheadline,
+    locationNote,
+    tagline,
+    availability,
     backgroundImage,
     ctaLabel,
     ctaHref
@@ -42,16 +49,20 @@ export const landingPageQuery = /* groq */ `
     stats
   },
   services{
+    heading,
     services[]->{
       _id,
       orderNumber,
       title,
       description,
+      icon,
       image
     }
   },
   skills{
     heading,
+    educationHeading,
+    skillsHeading,
     skills[]->{
       _id,
       name,
@@ -72,9 +83,14 @@ export const landingPageQuery = /* groq */ `
     }
   },
   projects{
+    heading,
+    featuredCount,
+    viewAllLabel,
+    showLessLabel,
     projects[]->{
       _id,
       title,
+      category,
       techstack,
       image,
       url,
@@ -82,11 +98,17 @@ export const landingPageQuery = /* groq */ `
       order
     }
   },
+  quote{
+    text,
+    signature,
+    footnote
+  },
   contact{
     heading,
     email,
     socials,
-    note
+    note,
+    image
   },
   footer{
     tagline,
@@ -103,7 +125,8 @@ export const landingPageQuery = /* groq */ `
     education,
     certifications,
     languages,
-    showDownloadButton
+    showDownloadButton,
+    buttonLabel
   },
   seo
 }`;
@@ -117,9 +140,25 @@ export const translationsQuery = /* groq */ `
   entries[]{ from, to }
 }`;
 
+/** Global typography settings, with uploaded font files resolved to CDN URLs. */
+export const themeSettingsQuery = /* groq */ `
+*[_type == "themeSettings"][0]{
+  ...,
+  "customFonts": customFonts[defined(fontFile.asset)]{
+    _key,
+    fontName,
+    weight,
+    style,
+    usage,
+    "url": fontFile.asset->url,
+    "extension": fontFile.asset->extension
+  }
+}`;
+
 export interface LandingPagePayload {
   page: LandingPage | null;
   translations: TranslationDoc[];
+  theme: ThemeSettingsDoc | null;
 }
 
 /**
@@ -127,10 +166,10 @@ export interface LandingPagePayload {
  * Returns an empty payload when Sanity isn't configured.
  */
 export async function getLandingPage(): Promise<LandingPagePayload> {
-  if (!isSanityConfigured) return { page: null, translations: [] };
+  if (!isSanityConfigured) return { page: null, translations: [], theme: null };
   try {
     return await client.fetch<LandingPagePayload>(
-      `{"page": ${landingPageQuery}, "translations": ${translationsQuery}}`
+      `{"page": ${landingPageQuery}, "translations": ${translationsQuery}, "theme": ${themeSettingsQuery}}`
     );
   } catch (err) {
     console.error('[sanity] Failed to fetch landing page:', err);

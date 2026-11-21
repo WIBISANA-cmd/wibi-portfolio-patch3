@@ -14,6 +14,7 @@
     "seed": "node scripts/seed.mjs",
     "seed:skills": "node scripts/seed-skills.mjs",
     "seed:translations": "node scripts/seed-translations.mjs",
+    "seed:design": "node scripts/seed-design.mjs",
     "test": "node scripts/test-translate.ts"
   },
   "dependencies": {

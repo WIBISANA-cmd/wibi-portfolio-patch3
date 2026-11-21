@@ -21,6 +21,7 @@ const SKIP_KEYS = new Set([
   'ogImage',
   'logo',
   'favicon',
+  'icon',
 ]);
 
 export type Dict = Map<string, string>;

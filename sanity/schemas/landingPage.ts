@@ -15,6 +15,7 @@ export default defineType({
     { name: 'skills', title: 'Skills' },
     { name: 'experiences', title: 'Experiences' },
     { name: 'projects', title: 'Projects' },
+    { name: 'quote', title: 'Quote' },
     { name: 'contact', title: 'Contact' },
     { name: 'footer', title: 'Footer' },
     { name: 'cv', title: 'CV / Resume' },
@@ -69,6 +70,18 @@ export default defineType({
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
+          name: 'label',
+          title: 'Top-left Label (accent)',
+          description: 'First line of the small label in the top-left corner, e.g. "Web Developer". Falls back to the preloader wordmark.',
+          type: 'string',
+        }),
+        defineField({
+          name: 'sublabel',
+          title: 'Top-left Sub-label',
+          description: 'Second line under the label, e.g. "Digital Creator".',
+          type: 'string',
+        }),
+        defineField({
           name: 'links',
           title: 'Nav Links',
           description: 'Links shown in the main site navigation (e.g. About, Services, Projects).',
@@ -94,17 +107,56 @@ export default defineType({
       group: 'hero',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'eyebrow', title: 'Eyebrow', type: 'string' }),
+        defineField({
+          name: 'backgroundWord',
+          title: 'Background Word',
+          description: 'Giant word printed behind the portrait, e.g. "PORTFOLIO".',
+          type: 'string',
+        }),
         defineField({
           name: 'headline',
-          title: 'Headline',
+          title: 'Greeting (script line)',
+          description: "Handwritten line above the name, e.g. \"Hello, I'm\".",
           type: 'string',
           validation: (rule) => rule.required(),
         }),
-        defineField({ name: 'subheadline', title: 'Subheadline', type: 'text', rows: 2 }),
+        defineField({
+          name: 'name',
+          title: 'Display Name',
+          description: 'Big condensed name. Put a line break where it should wrap. Falls back to CV → Full Name.',
+          type: 'text',
+          rows: 2,
+        }),
+        defineField({
+          name: 'eyebrow',
+          title: 'Role / Title',
+          description: 'Accent-coloured role shown under the name.',
+          type: 'string',
+        }),
+        defineField({ name: 'subheadline', title: 'Intro Paragraph', type: 'text', rows: 3 }),
+        defineField({
+          name: 'locationNote',
+          title: 'Location Note',
+          description: 'Small line with a globe icon, e.g. "Available worldwide".',
+          type: 'string',
+        }),
+        defineField({
+          name: 'tagline',
+          title: 'Side Tagline',
+          description: 'Short line next to the sparkle badge, e.g. "Turning ideas into powerful digital experiences."',
+          type: 'text',
+          rows: 2,
+        }),
+        defineField({
+          name: 'availability',
+          title: 'Availability Badge',
+          description: 'Shown in the top bar and the contact section, e.g. "Available for freelance".',
+          type: 'string',
+        }),
         defineField({
           name: 'backgroundImage',
-          title: 'Background Image',
+          title: 'Portrait',
+          description: 'Cut-out portrait (transparent PNG works best). It stands in front of the background word.',
           type: 'image',
           options: { hotspot: true },
           fields: [{ name: 'alt', type: 'string', title: 'Alt text', validation: (rule) => rule.required() }]
@@ -151,6 +203,7 @@ export default defineType({
         defineField({
           name: 'stats',
           title: 'Stats',
+          description: 'Shown on the right side of the hero, e.g. "3+" / "Years Experience".',
           type: 'array',
           of: [
             {
@@ -174,8 +227,14 @@ export default defineType({
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
+          name: 'heading',
+          title: 'Heading',
+          description: 'e.g. "Work Process".',
+          type: 'string',
+        }),
+        defineField({
           name: 'services',
-          title: 'Services',
+          title: 'Services / Process Steps',
           type: 'array',
           of: [{ type: 'reference', to: [{ type: 'service' }] }],
         }),
@@ -191,6 +250,18 @@ export default defineType({
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({ name: 'heading', title: 'Heading', type: 'string', initialValue: 'Skills & Expertise' }),
+        defineField({
+          name: 'educationHeading',
+          title: 'Education Sub-heading',
+          description: 'Label above the education list (entries come from CV → Education & Certifications).',
+          type: 'string',
+        }),
+        defineField({
+          name: 'skillsHeading',
+          title: 'Skills Sub-heading',
+          description: 'Label above the skill tags.',
+          type: 'string',
+        }),
         defineField({
           name: 'skills',
           title: 'Skills',
@@ -226,12 +297,37 @@ export default defineType({
       group: 'projects',
       options: { collapsible: true, collapsed: false },
       fields: [
+        defineField({ name: 'heading', title: 'Heading', type: 'string', description: 'e.g. "Selected Projects".' }),
+        defineField({
+          name: 'featuredCount',
+          title: 'Projects shown before "View all"',
+          type: 'number',
+          initialValue: 3,
+          validation: (rule) => rule.min(1).integer(),
+        }),
+        defineField({ name: 'viewAllLabel', title: '"View all" Label', type: 'string' }),
+        defineField({ name: 'showLessLabel', title: '"Show less" Label', type: 'string' }),
         defineField({
           name: 'projects',
           title: 'Projects',
           type: 'array',
           of: [{ type: 'reference', to: [{ type: 'project' }] }],
         }),
+      ],
+    }),
+
+    /* --------------------------------------------------------------- QUOTE */
+    defineField({
+      name: 'quote',
+      title: 'Quote Panel',
+      description: 'Accent panel next to the work process.',
+      type: 'object',
+      group: 'quote',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({ name: 'text', title: 'Quote', type: 'text', rows: 3 }),
+        defineField({ name: 'signature', title: 'Signature', description: 'Rendered in a handwritten font.', type: 'string' }),
+        defineField({ name: 'footnote', title: 'Footnote', type: 'string' }),
       ],
     }),
 
@@ -259,7 +355,15 @@ export default defineType({
             }
           ]
         }),
-        defineField({ name: 'note', title: 'Optional Note', type: 'string' }),
+        defineField({ name: 'note', title: 'Intro Paragraph', type: 'text', rows: 3 }),
+        defineField({
+          name: 'image',
+          title: 'Showcase Image',
+          description: 'Optional visual on the right (e.g. a laptop mockup of your work).',
+          type: 'image',
+          options: { hotspot: true },
+          fields: [{ name: 'alt', type: 'string', title: 'Alt text', validation: (rule) => rule.required() }]
+        }),
       ],
     }),
 
@@ -356,6 +460,7 @@ export default defineType({
           type: 'boolean',
           initialValue: true,
         }),
+        defineField({ name: 'buttonLabel', title: 'Download Button Label', type: 'string' }),
       ],
     }),
 

@@ -12,6 +12,12 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'category',
+      title: 'Category',
+      description: 'Short line under the title on the card, e.g. "E-commerce Website". Falls back to the first techstack items.',
+      type: 'string',
+    }),
+    defineField({
       name: 'techstack',
       title: 'Techstack',
       type: 'array',

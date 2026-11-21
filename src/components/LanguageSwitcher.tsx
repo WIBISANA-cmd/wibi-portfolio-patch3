@@ -9,7 +9,7 @@ export default function LanguageSwitcher({ className = '' }: { className?: strin
     <div
       role="group"
       aria-label="Change language"
-      className={`flex items-center gap-0.5 rounded-lg border border-line/40 p-0.5 ${className}`}
+      className={`flex items-center gap-0.5 h-10 rounded-full border border-line p-1 font-buttons ${className}`}
     >
       {languages.map((option) => {
         const active = option.code === lang;
@@ -20,8 +20,8 @@ export default function LanguageSwitcher({ className = '' }: { className?: strin
             onClick={() => setLang(option.code)}
             title={option.label}
             aria-pressed={active}
-            className={`px-2 py-1 rounded-md text-xs font-medium uppercase tracking-wide transition-colors ${
-              active ? 'bg-ink-strong text-bg' : 'text-ink-2 hover:text-ink'
+            className={`h-full px-2.5 rounded-full text-[11px] font-semibold uppercase tracking-wide transition-colors ${
+              active ? 'bg-accent text-on-accent' : 'text-ink-2 hover:text-accent-text'
             }`}
           >
             {option.code}

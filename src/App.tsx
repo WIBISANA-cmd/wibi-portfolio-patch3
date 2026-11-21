@@ -1,49 +1,32 @@
 import { useMemo, useState } from 'react';
 import NavSection from './sections/NavSection';
 import HeroSection from './sections/HeroSection';
+import ProjectsSection from './sections/ProjectsSection';
 import MarqueeSection from './sections/MarqueeSection';
 import AboutSection from './sections/AboutSection';
-import ServicesSection from './sections/ServicesSection';
-import SkillsSection from './sections/SkillsSection';
+import CapabilitiesSection from './sections/CapabilitiesSection';
 import ExperienceSection from './sections/ExperienceSection';
-import ProjectsSection from './sections/ProjectsSection';
 import ContactSection from './sections/ContactSection';
 import FooterSection from './sections/FooterSection';
 import SmoothScroll from './components/SmoothScroll';
 import Preloader from './components/Preloader';
-import DownloadCVButton from './components/DownloadCVButton';
+import SEOHead from './components/SEOHead';
 import { useLandingPage } from './lib/useLandingPage';
 import { isSanityConfigured, sanityConfig, imageUrl } from './lib/sanity.client';
 import { LanguageProvider, useLanguage } from './lib/i18n';
 import { translate } from './lib/translate';
 import type { LandingPage } from './lib/sanity.types';
 
-function StatusScreen({
-  message,
-  details,
-}: {
-  message: string;
-  details?: string;
-}) {
+function StatusScreen({ message, details }: { message: string; details?: string }) {
   return (
-    <main
-      className="h-screen flex items-center justify-center px-6 text-center bg-bg text-ink"
-    >
+    <main className="h-screen flex items-center justify-center px-6 text-center bg-bg text-ink">
       <div className="max-w-2xl space-y-4">
-        <p className="text-muted font-light uppercase tracking-widest text-sm">
-          {message}
-        </p>
-        {details ? (
-          <p className="text-ink-2 font-light text-xs tracking-[0.18em] uppercase">
-            {details}
-          </p>
-        ) : null}
+        <p className="text-muted font-light uppercase tracking-widest text-sm">{message}</p>
+        {details ? <p className="text-ink-2 font-light text-xs tracking-[0.18em] uppercase">{details}</p> : null}
       </div>
     </main>
   );
 }
-
-import SEOHead from './components/SEOHead';
 
 export default function App() {
   // Every section renders exclusively from Sanity — no bundled fallback content.
@@ -54,7 +37,7 @@ export default function App() {
   if (!isSanityConfigured) {
     return (
       <StatusScreen
-        message='Sanity is not configured in this build. Set VITE_SANITY_PROJECT_ID in Dokploy build args, then redeploy.'
+        message="Sanity is not configured in this build. Set VITE_SANITY_PROJECT_ID in Dokploy build args, then redeploy."
         details={sanityDetails}
       />
     );
@@ -93,7 +76,7 @@ export default function App() {
  * active dictionary once — every section keeps reading plain `data`.
  */
 function Site({ source }: { source: LandingPage }) {
-  const { dict, t } = useLanguage();
+  const { dict } = useLanguage();
   const data = useMemo(() => translate(source, dict), [source, dict]);
   const [preloaderDone, setPreloaderDone] = useState(false);
 
@@ -107,45 +90,38 @@ function Site({ source }: { source: LandingPage }) {
 
   return (
     <>
-      <SEOHead seo={data?.seo} wordmark={data?.preloader?.wordmark} faviconUrl={faviconUrl} />
-      {showPreloader && (
-        <Preloader
-          data={data.preloader}
-          onComplete={() => setPreloaderDone(true)}
-        />
-      )}
+      <SEOHead seo={data.seo} wordmark={data.preloader?.wordmark} faviconUrl={faviconUrl} />
+      {showPreloader && <Preloader data={data.preloader} onComplete={() => setPreloaderDone(true)} />}
+
+      {/* Fixed header lives outside the smoothed (transformed) content so it stays pinned. */}
+      <NavSection
+        label={data.navigation?.label || data.preloader?.wordmark}
+        sublabel={data.navigation?.sublabel}
+        availability={data.hero?.availability}
+        links={data.navigation?.links?.map((l) => ({ label: l.label, href: l.url }))}
+        logoUrl={logoUrl}
+        ready={contentReady}
+      />
 
       <SmoothScroll>
-        <NavSection
-          wordmark={data.preloader?.wordmark}
-          links={data.navigation?.links?.map(l => ({ label: l.label, href: l.url }))}
-          logoUrl={logoUrl}
-          ready={contentReady}
-        />
         <main className="bg-bg text-ink overflow-x-clip font-body">
-          <HeroSection data={data.hero ?? {}} ready={contentReady} />
+          <HeroSection
+            data={data.hero ?? {}}
+            stats={data.about?.stats}
+            fallbackName={data.cv?.fullName}
+            ready={contentReady}
+          />
+          <ProjectsSection data={data.projects ?? {}} />
           <MarqueeSection data={data.marquee ?? {}} />
           <AboutSection data={data.about ?? {}} />
-          <ServicesSection data={data.services ?? {}} />
-          <SkillsSection data={data.skills ?? {}} />
+          <CapabilitiesSection
+            skills={data.skills ?? {}}
+            services={data.services ?? {}}
+            quote={data.quote ?? {}}
+            cv={data.cv}
+          />
           <ExperienceSection data={data.experiences ?? {}} />
-          <ProjectsSection data={data.projects ?? {}} />
-          {data.cv?.showDownloadButton !== false && (
-            <section className="py-16 sm:py-20 bg-surface">
-              <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div className="flex flex-col gap-2">
-                  <h2 className="font-display font-medium text-2xl sm:text-3xl tracking-tight text-ink">
-                    {t('Interested in my full resume?')}
-                  </h2>
-                  <p className="text-muted text-sm sm:text-base">
-                    {t('Download my ATS-friendly CV as PDF.')}
-                  </p>
-                </div>
-                <DownloadCVButton data={data} />
-              </div>
-            </section>
-          )}
-          <ContactSection data={data.contact ?? {}} />
+          <ContactSection page={data} />
           <FooterSection data={data.footer ?? {}} logoUrl={logoUrl} />
         </main>
       </SmoothScroll>

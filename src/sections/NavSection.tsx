@@ -1,116 +1,154 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Menu, X } from 'lucide-react';
 import { gsap, ScrollTrigger, useGSAP } from '../lib/gsap';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import ThemeToggle from '../components/ThemeToggle';
+import { Sparkle, normalizeHref } from '../components/ui';
 import { useLanguage } from '../lib/i18n';
 
 interface NavSectionProps {
-  wordmark?: string;
+  label?: string;
+  sublabel?: string;
+  availability?: string;
   links?: { label: string; href: string }[];
   logoUrl?: string;
   ready?: boolean;
 }
 
-export default function NavSection({
-  wordmark = 'WIBISANA',
-  links = [
-    { label: 'About', href: '#about' },
-    { label: 'Services', href: '#services' },
-    { label: 'Projects', href: '#projects' },
-  ],
-  logoUrl,
-  ready = true,
-}: NavSectionProps) {
+export default function NavSection({ label, sublabel, availability, links = [], logoUrl, ready = true }: NavSectionProps) {
   const headerRef = useRef<HTMLElement>(null);
-  const borderRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
   const { t } = useLanguage();
 
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
-
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        // Entrance — held below the preloader until it hands off.
         gsap.set(headerRef.current, { opacity: 0, y: -16 });
-        if (ready) {
-          gsap.to(headerRef.current, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 });
-        }
-
-        // Toggle solid background and border on scroll
-        ScrollTrigger.create({
-          start: 'top -50',
-          end: 99999,
-          onToggle: (self) => {
-            if (self.isActive) {
-              gsap.to(headerRef.current, { backgroundColor: 'var(--surface)', duration: 0.3 });
-              gsap.to(borderRef.current, { opacity: 1, duration: 0.3 });
-            } else {
-              gsap.to(headerRef.current, { backgroundColor: 'transparent', duration: 0.3 });
-              gsap.to(borderRef.current, { opacity: 0, duration: 0.3 });
-            }
-          },
-        });
+        if (ready) gsap.to(headerRef.current, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.1 });
       });
-
       mm.add('(prefers-reduced-motion: reduce)', () => {
         gsap.set(headerRef.current, { opacity: 1, y: 0 });
       });
 
-      return () => mm.revert();
+      const trigger = ScrollTrigger.create({
+        start: 'top -40',
+        end: 99999,
+        onToggle: (self) => setScrolled(self.isActive),
+      });
+
+      return () => {
+        trigger.kill();
+        mm.revert();
+      };
     },
     { scope: headerRef, dependencies: [ready] }
   );
 
+  // Close the mobile menu on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
+  const solid = scrolled || open;
+
   return (
     <header
       ref={headerRef}
-      className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4 transition-colors"
-      style={{ backgroundColor: 'transparent' }}
+      className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
+        solid ? 'bg-bg/90 backdrop-blur-md' : 'bg-transparent'
+      }`}
     >
-      <div
-        ref={borderRef}
-        className="absolute bottom-0 left-0 w-full h-[1px] bg-line opacity-0"
-      />
-      
-      <a href="#" className="flex items-center gap-3 group text-ink font-display font-bold tracking-tight">
-        <img
-          src={logoUrl || '/wblogo.jpg'}
-          alt={wordmark || 'WIBISANA Logo'}
-          className="w-9 h-9 object-cover rounded-full border border-line/20 shadow-sm transition-transform group-hover:scale-105"
-        />
-        <span className="text-base font-semibold tracking-tight">{wordmark}</span>
-      </a>
+      <div className="max-w-page mx-auto px-4 sm:px-8 lg:px-12">
+        <div className={`flex items-center justify-between gap-4 h-16 sm:h-20 border-b transition-colors ${solid ? 'border-accent-line' : 'border-transparent'}`}>
+          <a href="#top" className="flex items-center gap-3 min-w-0">
+            {logoUrl && (
+              <img src={logoUrl} alt="" className="w-8 h-8 rounded-full object-cover border border-line shrink-0" />
+            )}
+            <span className="flex flex-col leading-tight min-w-0 font-nav-brand">
+              {label && (
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.08em] text-accent-text truncate">{label}</span>
+              )}
+              {sublabel && (
+                <span className="text-[11px] sm:text-xs font-medium uppercase tracking-[0.08em] text-ink truncate">{sublabel}</span>
+              )}
+            </span>
+          </a>
 
-      <div className="flex items-center gap-3 md:gap-6">
-      <nav className="hidden md:flex items-center gap-8">
-        {links.map((link) => {
-          const href = link.href
-            ? (link.href.startsWith('#') || link.href.startsWith('http') || link.href.startsWith('/') ? link.href : `#${link.href}`)
-            : '#';
-          return (
-            <a
-              key={link.label}
-              href={href}
-              className="text-sm font-medium text-ink-2 hover:text-ink transition-colors relative group"
-            >
-              {link.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-ink transition-all group-hover:w-full" />
-            </a>
-          );
-        })}
-        <a
-          href="#contact"
-          className="bg-ink-strong text-bg px-5 py-2 rounded-lg text-sm font-medium hover:bg-ink transition-colors"
-        >
-          {t('Contact')}
-        </a>
-      </nav>
+          {links.length > 0 && (
+            <nav aria-label="Main" className="hidden lg:flex items-center gap-8 font-nav-menu">
+              {links.map((link) => (
+                <a
+                  key={link.label}
+                  href={normalizeHref(link.href)}
+                  className="text-xs font-medium uppercase tracking-[0.12em] text-ink-2 hover:text-accent-text transition-colors"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          )}
 
-      <LanguageSwitcher />
+          <div className="flex items-center gap-2 sm:gap-3">
+            {availability && (
+              <a
+                href="#contact"
+                className="hidden md:inline-flex items-center gap-3 font-nav-menu text-xs font-medium uppercase tracking-[0.12em] text-ink hover:text-accent-text transition-colors pr-2"
+              >
+                {availability}
+                <Sparkle className="w-4 h-4 text-accent-text" />
+              </a>
+            )}
+            <LanguageSwitcher />
+            <ThemeToggle />
+            {links.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                aria-controls="mobile-menu"
+                aria-label={open ? t('Close menu') : t('Menu')}
+                className="lg:hidden w-10 h-10 inline-flex items-center justify-center rounded-full border border-line text-ink hover:border-accent-line transition-colors"
+              >
+                {open ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              </button>
+            )}
+          </div>
+        </div>
 
-      {/* Mobile Menu Button - Placeholder for actual mobile menu implementation */}
-      <button className="md:hidden text-ink p-2">
-        {t('Menu')}
-      </button>
+        {open && (
+          <nav id="mobile-menu" aria-label="Mobile" className="lg:hidden pb-6 pt-2 font-nav-menu">
+            <ul className="flex flex-col">
+              {links.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={normalizeHref(link.href)}
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-between py-4 border-b border-line text-sm font-semibold uppercase tracking-[0.12em] text-ink hover:text-accent-text"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+              {availability && (
+                <li>
+                  <a
+                    href="#contact"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-3 py-4 text-sm font-semibold uppercase tracking-[0.12em] text-accent-text"
+                  >
+                    {availability}
+                    <Sparkle className="w-4 h-4" />
+                  </a>
+                </li>
+              )}
+            </ul>
+          </nav>
+        )}
       </div>
     </header>
   );

@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react';
 import { getLandingPage } from './sanity.queries';
-import type { LandingPage, TranslationDoc } from './sanity.types';
+import { applyFontTheme } from './fonts';
+import type { LandingPage, ThemeSettingsDoc, TranslationDoc } from './sanity.types';
 
 interface LandingPageState {
   data: LandingPage | null;
   translations: TranslationDoc[];
+  theme: ThemeSettingsDoc | null;
   loading: boolean;
   error: string | null;
 }
 
-/** Fetches the landingPage document and the language dictionaries once on mount. */
+/** Fetches the landingPage document, language dictionaries and theme settings once on mount. */
 export function useLandingPage(): LandingPageState {
   const [data, setData] = useState<LandingPage | null>(null);
   const [translations, setTranslations] = useState<TranslationDoc[]>([]);
+  const [theme, setTheme] = useState<ThemeSettingsDoc | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,8 +24,11 @@ export function useLandingPage(): LandingPageState {
     getLandingPage()
       .then((result) => {
         if (!active) return;
+        // Set the font variables before the first content render — no font swap flash.
+        applyFontTheme(result.theme);
         setData(result.page);
         setTranslations(result.translations ?? []);
+        setTheme(result.theme ?? null);
       })
       .catch((err) => {
         if (!active) return;
@@ -36,5 +42,5 @@ export function useLandingPage(): LandingPageState {
     };
   }, []);
 
-  return { data, translations, loading, error };
+  return { data, translations, theme, loading, error };
 }

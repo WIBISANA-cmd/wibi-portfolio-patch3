@@ -1,85 +1,121 @@
+import type { ReactNode } from 'react';
+import { ArrowRight, ArrowUpRight, Github, Globe, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import Reveal from '../components/Reveal';
-import { useLanguage } from '../lib/i18n';
-import type { ContactData } from '../lib/sanity.types';
+import DownloadCVButton from '../components/DownloadCVButton';
+import { Container, IconCircle, Sparkle } from '../components/ui';
+import { imageUrl } from '../lib/sanity.client';
+import type { LandingPage } from '../lib/sanity.types';
 
-export default function ContactSection({ data }: { data: ContactData }) {
-  const { t } = useLanguage();
-  const heading = data.heading || "Let's work together";
-  const email = data.email || 'hello@example.com';
-  const socials = data.socials || [];
-  const note = data.note;
+function socialIcon(label: string, url: string) {
+  const key = `${label} ${url}`.toLowerCase();
+  if (key.includes('github')) return Github;
+  if (key.includes('whatsapp') || key.includes('wa.me')) return MessageCircle;
+  return ArrowUpRight;
+}
+
+function ContactRow({ icon, href, children, external }: { icon: ReactNode; href?: string; children: ReactNode; external?: boolean }) {
+  const inner = (
+    <>
+      <IconCircle className="group-hover:bg-accent group-hover:text-on-accent group-hover:border-accent">{icon}</IconCircle>
+      <span className="text-sm text-ink break-all sm:break-normal">{children}</span>
+    </>
+  );
+  const className = 'group flex items-center gap-4 py-3 border-b border-accent-line last:border-b-0';
+  return (
+    <li>
+      {href ? (
+        <a
+          href={href}
+          className={`${className} hover:text-accent-text`}
+          {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        >
+          {inner}
+        </a>
+      ) : (
+        <div className={className}>{inner}</div>
+      )}
+    </li>
+  );
+}
+
+const stripProtocol = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+export default function ContactSection({ page }: { page: LandingPage }) {
+  const contact = page.contact ?? {};
+  const cv = page.cv ?? {};
+  const availability = page.hero?.availability;
+  const imgUrl = imageUrl(contact.image, 1100);
+  const socials = contact.socials ?? [];
+  const showCV = cv.showDownloadButton !== false;
 
   return (
-    <section id="contact" className="py-24 sm:py-32 md:py-40 bg-ink text-bg">
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24">
-          
-          {/* Left: Heading & Email */}
-          <div className="flex flex-col gap-12">
-            <Reveal yOffset={30}>
-              <h2 className="font-display font-medium text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.1]">
-                {heading}
+    <section id="contact" className="py-14 sm:py-20 border-b border-accent-line overflow-hidden">
+      <Container>
+        <div className={`grid grid-cols-1 gap-12 lg:gap-10 ${imgUrl ? 'lg:grid-cols-[1fr_1fr_1.15fr]' : 'lg:grid-cols-2'}`}>
+          {/* Heading + intro + CTAs */}
+          <Reveal yOffset={24} className="flex flex-col gap-6 items-start">
+            {contact.heading && (
+              <h2 className="relative font-contact-heading font-bold uppercase tracking-tight text-ink text-4xl sm:text-5xl leading-[1.05] max-w-[12ch]">
+                {contact.heading}
+                <Sparkle className="inline-block w-6 h-6 ml-3 -translate-y-1 text-accent-text align-middle" />
               </h2>
-            </Reveal>
-
-            <Reveal delay={0.2} yOffset={30}>
-              <a 
-                href={`mailto:${email}`}
-                className="group inline-flex flex-col items-start gap-2"
-              >
-                <span className="text-muted text-sm uppercase tracking-widest font-medium">
-                  {t('Drop a line')}
-                </span>
-                <span className="font-display text-2xl sm:text-3xl lg:text-4xl hover:text-bg/80 transition-colors relative">
-                  {email}
-                  <span className="absolute -bottom-2 left-0 w-full h-[2px] bg-bg transform origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100" />
-                </span>
-              </a>
-            </Reveal>
-          </div>
-
-          {/* Right: Socials & Note */}
-          <div className="flex flex-col justify-end gap-12 lg:pl-12 border-t lg:border-t-0 lg:border-l border-line/20 pt-12 lg:pt-0">
-            {socials.length > 0 && (
-              <div className="flex flex-col gap-6">
-                <Reveal yOffset={20}>
-                  <h3 className="text-muted text-sm uppercase tracking-widest font-medium">
-                    {t('Socials')}
-                  </h3>
-                </Reveal>
-                <ul className="flex flex-col gap-4">
-                  {socials.map((social, i) => (
-                    <li key={social.label}>
-                      <Reveal delay={0.1 * i} yOffset={20}>
-                        <a
-                          href={social.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="font-display text-xl md:text-2xl hover:text-bg/70 transition-colors flex items-center justify-between group"
-                        >
-                          {social.label}
-                          <span className="text-muted opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                            ↗
-                          </span>
-                        </a>
-                      </Reveal>
-                    </li>
-                  ))}
-                </ul>
-              </div>
             )}
+            {contact.note && <p className="font-contact-text text-sm sm:text-[0.95rem] text-ink-2 leading-relaxed max-w-sm whitespace-pre-line">{contact.note}</p>}
 
-            {note && (
-              <Reveal delay={0.4} yOffset={20}>
-                <p className="text-muted font-body text-base md:text-lg max-w-sm leading-relaxed">
-                  {note}
-                </p>
-              </Reveal>
-            )}
-          </div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-4 pt-2">
+              {availability && contact.email && (
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="group inline-flex items-center gap-3 font-buttons text-xs font-semibold uppercase tracking-[0.1em] text-accent-text"
+                >
+                  <IconCircle className="group-hover:bg-accent group-hover:text-on-accent group-hover:border-accent">
+                    <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+                  </IconCircle>
+                  {availability}
+                </a>
+              )}
+              {showCV && <DownloadCVButton data={page} />}
+            </div>
+          </Reveal>
 
+          {/* Contact details + socials */}
+          <Reveal yOffset={24} delay={0.08}>
+            <ul className="flex flex-col font-contact-text">
+              {contact.email && (
+                <ContactRow icon={<Mail className="w-4 h-4" strokeWidth={1.5} />} href={`mailto:${contact.email}`}>
+                  {contact.email}
+                </ContactRow>
+              )}
+              {cv.website && (
+                <ContactRow icon={<Globe className="w-4 h-4" strokeWidth={1.5} />} href={cv.website} external>
+                  {stripProtocol(cv.website)}
+                </ContactRow>
+              )}
+              {cv.phone && (
+                <ContactRow icon={<Phone className="w-4 h-4" strokeWidth={1.5} />} href={`tel:${cv.phone.replace(/[^\d+]/g, '')}`}>
+                  {cv.phone}
+                </ContactRow>
+              )}
+              {cv.location && <ContactRow icon={<MapPin className="w-4 h-4" strokeWidth={1.5} />}>{cv.location}</ContactRow>}
+              {socials.map((s) => {
+                const Icon = socialIcon(s.label, s.url);
+                return (
+                  <ContactRow key={`${s.label}-${s.url}`} icon={<Icon className="w-4 h-4" strokeWidth={1.5} />} href={s.url} external>
+                    {s.label}
+                  </ContactRow>
+                );
+              })}
+            </ul>
+          </Reveal>
+
+          {/* Optional showcase image */}
+          {imgUrl && (
+            <Reveal yOffset={30} delay={0.15} className="relative">
+              <img src={imgUrl} alt={contact.image?.alt || ''} loading="lazy" className="w-full h-auto object-contain" />
+            </Reveal>
+          )}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

@@ -23,6 +23,26 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: 'icon',
+      title: 'Icon',
+      description: 'Icon shown in the circle of the work-process list.',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Search / Discover', value: 'search' },
+          { title: 'Lightbulb / Ideate', value: 'idea' },
+          { title: 'Pen / Design', value: 'design' },
+          { title: 'Code / Develop', value: 'code' },
+          { title: 'Send / Deliver', value: 'launch' },
+          { title: 'Layers', value: 'layers' },
+          { title: 'Server', value: 'server' },
+          { title: 'Database', value: 'database' },
+          { title: 'Monitor', value: 'monitor' },
+          { title: 'Rocket', value: 'rocket' },
+        ],
+      },
+    }),
+    defineField({
       name: 'image',
       title: 'Optional Image',
       type: 'image',

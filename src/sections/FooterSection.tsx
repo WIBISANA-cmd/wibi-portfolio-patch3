@@ -1,53 +1,38 @@
-import Reveal from '../components/Reveal';
+import { Container, Sparkle, normalizeHref } from '../components/ui';
 import type { FooterData } from '../lib/sanity.types';
 
 export default function FooterSection({ data, logoUrl }: { data: FooterData; logoUrl?: string }) {
-  const tagline = data.tagline || 'Wibisana';
-  const copyright = data.copyright || '© 2026 Wibisana. All rights reserved.';
-  const links = data.links || [];
+  const links = data.links ?? [];
+  if (!data.tagline && !data.copyright && links.length === 0) return null;
 
   return (
-    <footer className="bg-ink text-bg pb-12 pt-8 sm:pb-16 px-6 md:px-12 border-t border-line/10">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-        
-        <Reveal yOffset={20}>
-          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 text-muted text-sm font-medium">
-            <div className="flex items-center gap-2">
-              <img
-                src={logoUrl || '/wblogo.jpg'}
-                alt={tagline || 'WIBISANA Logo'}
-                className="w-7 h-7 object-cover rounded-full border border-line/20 shadow-sm"
-              />
-              <span className="font-display uppercase tracking-widest text-bg">{tagline}</span>
-            </div>
-            <span className="hidden md:inline text-line/20">|</span>
-            <span>{copyright}</span>
-          </div>
-        </Reveal>
+    <footer className="py-8 font-footer-text">
+      <Container className="flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-muted">
+        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-5">
+          {(logoUrl || data.tagline) && (
+            <span className="inline-flex items-center gap-2.5">
+              {logoUrl && <img src={logoUrl} alt="" className="w-7 h-7 rounded-full object-cover border border-line" />}
+              {data.tagline && (
+                <span className="font-semibold uppercase tracking-[0.14em] text-ink">{data.tagline}</span>
+              )}
+              <Sparkle className="w-3 h-3 text-accent-text" />
+            </span>
+          )}
+          {data.copyright && <span>{data.copyright}</span>}
+        </div>
 
         {links.length > 0 && (
-          <Reveal yOffset={20} delay={0.2}>
-            <ul className="flex flex-wrap items-center justify-center gap-6 text-sm font-medium">
-              {links.map((link) => {
-                const href = link.url
-                  ? (link.url.startsWith('#') || link.url.startsWith('http') || link.url.startsWith('/') ? link.url : `#${link.url}`)
-                  : '#';
-                return (
-                  <li key={link.label}>
-                    <a 
-                      href={href}
-                      className="text-muted hover:text-bg transition-colors"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </Reveal>
+          <ul className="flex flex-wrap items-center justify-center gap-6">
+            {links.map((link) => (
+              <li key={link.label}>
+                <a href={normalizeHref(link.url)} className="uppercase tracking-[0.1em] hover:text-accent-text transition-colors">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
         )}
-
-      </div>
+      </Container>
     </footer>
   );
 }

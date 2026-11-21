@@ -74,19 +74,18 @@ export default function Preloader({ data, onComplete }: PreloaderProps) {
       <div className="relative overflow-hidden px-6">
         <h2
           ref={wordRef}
-          className="preloader-word text-center font-display font-black uppercase tracking-tight leading-none text-[12vw] sm:text-[9vw] md:text-[7vw]"
+          className="preloader-word text-accent text-center font-preloader-word uppercase leading-[0.9] text-[13vw] sm:text-[10vw] md:text-[8vw]"
         >
           {wordmark}
         </h2>
       </div>
 
-      <span
-        ref={countRef}
-        className="mt-6 font-light tabular-nums tracking-[0.35em] text-sm sm:text-base text-muted"
-      >
-        00
+      <span className="mt-6 inline-flex items-baseline gap-1 font-preloader-word text-accent-text">
+        <span ref={countRef} className="tabular-nums text-3xl sm:text-4xl">
+          00
+        </span>
+        <span className="text-base">%</span>
       </span>
-      <span className="font-light tracking-widest text-xs text-muted">%</span>
     </div>
   );
 }

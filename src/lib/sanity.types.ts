@@ -10,6 +10,7 @@ export interface ServiceDoc {
   orderNumber?: number;
   title: string;
   description: string;
+  icon?: string;
   image?: SanityImage;
 }
 
@@ -25,6 +26,7 @@ export interface ExperienceDoc {
 export interface ProjectDoc {
   _id: string;
   title: string;
+  category?: string;
   techstack?: string[];
   image: SanityImage;
   url?: string;
@@ -44,6 +46,26 @@ export interface SkillDoc {
   category: string;
   proficiency?: number;
   order?: number;
+}
+
+export interface CustomFontDoc {
+  _key: string;
+  fontName?: string;
+  weight?: number;
+  style?: 'normal' | 'italic';
+  /** Roles this font is applied to: body | heading | display | script. */
+  usage?: string[];
+  /** Resolved Sanity CDN URL of the uploaded file. */
+  url?: string;
+  extension?: string;
+}
+
+export interface ThemeSettingsDoc {
+  bodyFont?: string;
+  headingFont?: string;
+  displayFont?: string;
+  scriptFont?: string;
+  customFonts?: CustomFontDoc[];
 }
 
 export interface TranslationDoc {
@@ -68,16 +90,32 @@ export interface BrandingData {
 }
 
 export interface NavigationData {
+  label?: string;
+  sublabel?: string;
   links?: { label: string; url: string }[];
 }
 
 export interface HeroData {
-  eyebrow?: string;
+  backgroundWord?: string;
+  /** Script greeting line shown above the name. */
   headline?: string;
+  name?: string;
+  /** Accent role/title under the name. */
+  eyebrow?: string;
   subheadline?: string;
+  locationNote?: string;
+  tagline?: string;
+  availability?: string;
+  /** Portrait (field name kept for existing content). */
   backgroundImage?: SanityImage;
   ctaLabel?: string;
   ctaHref?: string;
+}
+
+export interface QuoteData {
+  text?: string;
+  signature?: string;
+  footnote?: string;
 }
 
 export interface AboutData {
@@ -88,6 +126,7 @@ export interface AboutData {
 }
 
 export interface ServicesData {
+  heading?: string;
   services?: ServiceDoc[];
 }
 
@@ -97,6 +136,10 @@ export interface ExperiencesData {
 }
 
 export interface ProjectsData {
+  heading?: string;
+  featuredCount?: number;
+  viewAllLabel?: string;
+  showLessLabel?: string;
   projects?: ProjectDoc[];
 }
 
@@ -106,6 +149,8 @@ export interface MarqueeData {
 
 export interface SkillsData {
   heading?: string;
+  educationHeading?: string;
+  skillsHeading?: string;
   skills?: SkillDoc[];
 }
 
@@ -114,6 +159,7 @@ export interface ContactData {
   email?: string;
   socials?: { label: string; url: string }[];
   note?: string;
+  image?: SanityImage;
 }
 
 export interface FooterData {
@@ -157,6 +203,7 @@ export interface CVData {
   certifications?: CVCertification[];
   languages?: CVLanguage[];
   showDownloadButton?: boolean;
+  buttonLabel?: string;
 }
 
 export interface LandingPage {
@@ -170,6 +217,7 @@ export interface LandingPage {
   skills?: SkillsData;
   experiences?: ExperiencesData;
   projects?: ProjectsData;
+  quote?: QuoteData;
   contact?: ContactData;
   footer?: FooterData;
   cv?: CVData;

@@ -2,17 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------ tokens */
+/* Typography — safe defaults. Overridden at runtime from Sanity → Theme
+   Settings (see src/lib/fonts.ts), which sets these on <html>. */
 :root {
-  --bg: #F5F5F4;
-  --surface: #FFFFFF;
-  --surface-2: #EAEAE8;
-  --line: #D9D9D6;
-  --muted: #8A8A86;
-  --ink-2: #3F3F3C;
-  --ink: #141413;
-  --ink-strong: #0A0A09;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Anton', Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  --font-script: 'Allura', 'Brush Script MT', cursive;
 }
 
+/* Light theme */
+:root {
+  --bg: #eef2fa;
+  --surface: #f6f8fd;
+  --surface-2: #e2e8f5;
+  --line: #cdd6e8;
+  --muted: #5a6378;
+  --ink-2: #2a3142;
+  --ink: #0b0e16;
+  --ink-strong: #000000;
+
+  --accent: #1a47f5;
+  --accent-strong: #0f35d4;
+  --accent-text: #1a47f5;
+  --accent-line: rgba(26, 71, 245, 0.35);
+  --on-accent: #ffffff;
+  --accent-panel: linear-gradient(160deg, #2a59ff 0%, #1338e0 55%, #0b2bb8 100%);
+  --hero-word-from: #1a47f5;
+  --hero-word-to: rgba(238, 242, 250, 0);
+  --hero-glow: radial-gradient(60% 55% at 50% 30%, rgba(26, 71, 245, 0.12), transparent 70%);
+
+  color-scheme: light;
+}
+
+/* Dark theme — explicit choice */
+:root[data-theme='dark'] {
+  --bg: #05070c;
+  --surface: #0a0d15;
+  --surface-2: #111726;
+  --line: #1b2338;
+  --muted: #8f98ad;
+  --ink-2: #c7cddb;
+  --ink: #f3f5fa;
+  --ink-strong: #ffffff;
+
+  --accent: #2456ff;
+  --accent-strong: #1a45e0;
+  --accent-text: #5b85ff;
+  --accent-line: rgba(36, 86, 255, 0.45);
+  --on-accent: #ffffff;
+  --accent-panel: linear-gradient(160deg, #1d4dff 0%, #1236c9 50%, #08198a 100%);
+  --hero-word-from: #1f4fff;
+  --hero-word-to: rgba(5, 7, 12, 0);
+  --hero-glow: radial-gradient(60% 55% at 50% 30%, rgba(36, 86, 255, 0.18), transparent 70%);
+
+  color-scheme: dark;
+}
+
+/* Dark theme — no script / no explicit choice yet */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']):not([data-theme='dark']) {
+    --bg: #05070c;
+    --surface: #0a0d15;
+    --surface-2: #111726;
+    --line: #1b2338;
+    --muted: #8f98ad;
+    --ink-2: #c7cddb;
+    --ink: #f3f5fa;
+    --ink-strong: #ffffff;
+    --accent: #2456ff;
+    --accent-strong: #1a45e0;
+    --accent-text: #5b85ff;
+    --accent-line: rgba(36, 86, 255, 0.45);
+    --on-accent: #ffffff;
+    --accent-panel: linear-gradient(160deg, #1d4dff 0%, #1236c9 50%, #08198a 100%);
+    --hero-word-from: #1f4fff;
+    --hero-word-to: rgba(5, 7, 12, 0);
+    --hero-glow: radial-gradient(60% 55% at 50% 30%, rgba(36, 86, 255, 0.18), transparent 70%);
+    color-scheme: dark;
+  }
+}
+
+/* ------------------------------------------------------------------- base */
 *,
 *::before,
 *::after {
@@ -26,16 +98,57 @@ body,
 #root {
   background: var(--bg);
   color: var(--ink);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.hero-heading {
-  background: var(--ink);
+/* Every heading (including rich text) follows the heading font unless a
+   component opts into another role (e.g. .font-display for the hero name). */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------ components */
+
+/* Giant word behind the hero portrait: solid accent at the top, fading out. */
+.hero-word {
+  background: linear-gradient(180deg, var(--hero-word-from) 0%, var(--hero-word-from) 38%, var(--hero-word-to) 92%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Portrait blends into the page at the bottom edge (hero + about). */
+.hero-portrait,
+.portrait-fade {
+  -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 78%, transparent 100%);
+}
+
+.accent-panel {
+  background: var(--accent-panel);
+  color: var(--on-accent);
 }
 
 /* Preloader word */
@@ -72,9 +185,12 @@ body,
   .preloader-word {
     animation: none;
   }
-  
-  /* Disable smooth scroll on reduced motion */
+
   html {
     scroll-behavior: auto !important;
+  }
+
+  body {
+    transition: none;
   }
 }

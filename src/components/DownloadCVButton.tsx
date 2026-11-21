@@ -28,10 +28,10 @@ export default function DownloadCVButton({ data, className = '' }: DownloadCVBut
       disabled={generating}
       className={`
         group relative inline-flex items-center gap-2.5
-        bg-ink text-bg px-6 py-3 rounded-lg text-sm font-medium
-        hover:bg-ink-strong transition-all duration-300
+        bg-accent text-on-accent px-5 h-11 rounded-full font-buttons
+        text-xs font-semibold uppercase tracking-[0.1em]
+        hover:bg-accent-strong transition-colors duration-300
         disabled:opacity-60 disabled:cursor-wait
-        shadow-sm hover:shadow-md
         ${className}
       `}
     >
@@ -49,7 +49,7 @@ export default function DownloadCVButton({ data, className = '' }: DownloadCVBut
           d="M12 4v12m0 0l-4-4m4 4l4-4M4 18h16"
         />
       </svg>
-      <span>{generating ? t('Generating…') : t('Download CV')}</span>
+      <span>{generating ? t('Generating…') : data.cv?.buttonLabel || t('Download CV')}</span>
     </button>
   );
 }
