@@ -47,7 +47,7 @@ export function SectionHeader({ title, action, id }: { title?: string; action?: 
   return (
     <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-1 mb-8 sm:mb-10">
       {title && (
-        <h2 id={id} className="font-section-title font-bold uppercase tracking-tight text-ink text-xl sm:text-2xl lg:text-[1.75rem] leading-none shrink-0">
+        <h2 id={id} className="font-section-title font-bold uppercase tracking-tight text-ink text-xl sm:text-2xl lg:fs-[1.75rem] leading-none shrink-0">
           {title}
         </h2>
       )}
@@ -70,7 +70,7 @@ export function ArrowAction({
   expanded?: boolean;
 }) {
   const className =
-    'group shrink-0 inline-flex items-center gap-3 font-buttons text-[11px] sm:text-xs font-medium uppercase tracking-[0.12em] text-ink-2 hover:text-accent-text transition-colors py-2';
+    'group shrink-0 inline-flex items-center gap-3 font-buttons fs-[11px] sm:text-xs font-medium uppercase tracking-[0.12em] text-ink-2 hover:text-accent-text transition-colors py-2';
   const content = (
     <>
       {label}

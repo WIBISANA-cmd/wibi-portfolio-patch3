@@ -64,8 +64,8 @@ function EducationSkills({ skills, cv }: { skills: SkillsData; cv?: CVData }) {
               <li key={i} className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-ink leading-snug">{e.title}</p>
-                  {e.org && <p className="text-[0.8rem] text-muted mt-0.5">{e.org}</p>}
-                  {e.note && <p className="text-[0.8rem] text-muted mt-1 leading-relaxed">{e.note}</p>}
+                  {e.org && <p className="fs-[0.8rem] text-muted mt-0.5">{e.org}</p>}
+                  {e.note && <p className="fs-[0.8rem] text-muted mt-1 leading-relaxed">{e.note}</p>}
                 </div>
                 {e.year && <span className="text-xs font-medium text-accent-text whitespace-nowrap pt-0.5">{e.year}</span>}
               </li>
@@ -82,7 +82,7 @@ function EducationSkills({ skills, cv }: { skills: SkillsData; cv?: CVData }) {
               <li
                 key={s._id}
                 title={s.category}
-                className="px-3 py-2 border border-line rounded-md text-[10.5px] font-medium uppercase tracking-[0.04em] text-ink-2 hover:border-accent-line hover:text-accent-text transition-colors"
+                className="px-3 py-2 border border-line rounded-md fs-[10.5px] font-medium uppercase tracking-[0.04em] text-ink-2 hover:border-accent-line hover:text-accent-text transition-colors"
               >
                 {s.name}
               </li>
@@ -120,7 +120,7 @@ function Process({ data }: { data: ServicesData }) {
               </span>
               <div className="pt-1.5 min-w-0">
                 <h3 className="font-service-title text-sm font-bold uppercase tracking-[0.02em] text-accent-text leading-snug">{step.title}</h3>
-                <p className="font-service-text mt-1 text-[0.8rem] text-ink-2 leading-relaxed">{step.description}</p>
+                <p className="font-service-text mt-1 fs-[0.8rem] text-ink-2 leading-relaxed">{step.description}</p>
               </div>
             </li>
           );
@@ -138,7 +138,7 @@ function QuotePanel({ data }: { data: QuoteData }) {
         <svg viewBox="0 0 48 36" aria-hidden="true" className="w-11 h-auto mb-8 opacity-90" fill="currentColor">
           <path d="M0 36V21.6C0 9.6 6 2.4 18 0l2.4 4.8C13.6 6.8 10.4 10.8 10 16.8h9.2V36H0Zm28 0V21.6C28 9.6 34 2.4 46 0l2.4 4.8c-6.8 2-10 6-10.4 12h9.2V36H28Z" />
         </svg>
-        <blockquote className="font-quote-text text-xl sm:text-[1.4rem] leading-snug font-normal whitespace-pre-line max-w-[16rem]">
+        <blockquote className="font-quote-text text-xl sm:fs-[1.4rem] leading-snug font-normal whitespace-pre-line max-w-[16rem]">
           {data.text}
         </blockquote>
         {data.signature && <p className="font-quote-signature text-5xl leading-none mt-8 -rotate-[4deg]">{data.signature}</p>}

@@ -74,7 +74,7 @@ export default function Preloader({ data, onComplete }: PreloaderProps) {
       <div className="relative overflow-hidden px-6">
         <h2
           ref={wordRef}
-          className="preloader-word text-accent text-center font-preloader-word uppercase leading-[0.9] text-[13vw] sm:text-[10vw] md:text-[8vw]"
+          className="preloader-word text-accent text-center font-preloader-word uppercase leading-[0.9] fs-[13vw] sm:fs-[10vw] md:fs-[8vw]"
         >
           {wordmark}
         </h2>

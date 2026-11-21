@@ -32,7 +32,7 @@ function ProjectCard({ project, index }: { project: ProjectDoc; index: number })
             {project.category && stack.length > 0 && (
               <ul className="flex flex-wrap gap-1.5">
                 {stack.map((tech) => (
-                  <li key={tech} className="px-2 py-0.5 border border-white/40 text-[10px] uppercase tracking-wider">
+                  <li key={tech} className="px-2 py-0.5 border border-white/40 fs-[10px] uppercase tracking-wider">
                     {tech}
                   </li>
                 ))}
@@ -43,13 +43,13 @@ function ProjectCard({ project, index }: { project: ProjectDoc; index: number })
       </div>
 
       <div className="flex items-center gap-4 pt-4">
-        <span className="font-project-number text-4xl sm:text-[2.6rem] leading-none text-accent-text">{number}</span>
+        <span className="font-project-number text-4xl sm:fs-[2.6rem] leading-none text-accent-text">{number}</span>
         <div className="flex-1 min-w-0">
-          <h3 className="font-project-title text-sm sm:text-[0.95rem] font-semibold uppercase tracking-tight text-ink leading-tight line-clamp-2">
+          <h3 className="font-project-title text-sm sm:fs-[0.95rem] font-semibold uppercase tracking-tight text-ink leading-tight line-clamp-2">
             {project.title}
           </h3>
           {subtitle && (
-            <p className="font-project-meta mt-1 text-[11px] sm:text-xs uppercase tracking-[0.06em] text-muted truncate">{subtitle}</p>
+            <p className="font-project-meta mt-1 fs-[11px] sm:text-xs uppercase tracking-[0.06em] text-muted truncate">{subtitle}</p>
           )}
         </div>
         {project.url && (

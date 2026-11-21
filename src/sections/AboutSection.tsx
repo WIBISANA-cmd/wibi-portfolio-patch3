@@ -21,7 +21,7 @@ export default function AboutSection({ data }: { data: AboutData }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-x-12">
           {data.body && (
             <Reveal yOffset={24} className={`flex flex-col justify-center ${mediaUrl ? 'lg:col-span-7' : 'lg:col-span-12'}`}>
-              <p className="font-about-body text-ink text-xl sm:text-2xl lg:text-[1.75rem] leading-[1.45] tracking-[-0.01em] whitespace-pre-line pb-10 lg:pb-16">
+              <p className="font-about-body text-ink text-xl sm:text-2xl lg:fs-[1.75rem] leading-[1.45] tracking-[-0.01em] whitespace-pre-line pb-10 lg:pb-16">
                 {data.body}
               </p>
             </Reveal>

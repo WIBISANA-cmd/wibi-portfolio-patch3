@@ -182,3 +182,24 @@ export const slotClassName = kebab;
 export function findSlotByField(fieldName?: string): ContentSlot | undefined {
   return CONTENT_SLOTS.find((s) => slotFieldName(s.key) === fieldName);
 }
+
+/* --------------------------------------------------------------- text size */
+
+/**
+ * Text size is a percentage of the design's own size for that content
+ * (100 = unchanged). It is a multiplier, so the responsive steps of the design
+ * (phone → desktop) are kept — every breakpoint just grows or shrinks together.
+ */
+export const SIZE_DEFAULT = 100;
+export const SIZE_MIN = 40;
+export const SIZE_MAX = 300;
+export const SIZE_STEP = 5;
+
+/** `heroName` → `heroNameSize` (the Sanity field name) */
+export const slotSizeFieldName = (key: string) => `${key}Size`;
+/** `heroName` → `--scale-hero-name` (unitless multiplier, e.g. 1.25) */
+export const slotScaleVar = (key: string) => `--scale-${kebab(key)}`;
+
+export function findSlotBySizeField(fieldName?: string): ContentSlot | undefined {
+  return CONTENT_SLOTS.find((s) => slotSizeFieldName(s.key) === fieldName);
+}

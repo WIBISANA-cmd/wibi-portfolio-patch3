@@ -71,10 +71,10 @@ export default function NavSection({ label, sublabel, availability, links = [], 
             )}
             <span className="flex flex-col leading-tight min-w-0 font-nav-brand">
               {label && (
-                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.08em] text-accent-text truncate">{label}</span>
+                <span className="fs-[11px] sm:text-xs font-bold uppercase tracking-[0.08em] text-accent-text truncate">{label}</span>
               )}
               {sublabel && (
-                <span className="text-[11px] sm:text-xs font-medium uppercase tracking-[0.08em] text-ink truncate">{sublabel}</span>
+                <span className="fs-[11px] sm:text-xs font-medium uppercase tracking-[0.08em] text-ink truncate">{sublabel}</span>
               )}
             </span>
           </a>

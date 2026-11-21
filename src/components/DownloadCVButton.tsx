@@ -10,12 +10,12 @@ interface DownloadCVButtonProps {
 
 export default function DownloadCVButton({ data, className = '' }: DownloadCVButtonProps) {
   const [generating, setGenerating] = useState(false);
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
 
   const handleClick = () => {
     setGenerating(true);
     try {
-      downloadCV(data);
+      downloadCV(data, { t, lang });
     } finally {
       // Reset after a brief delay
       setTimeout(() => setGenerating(false), 1500);

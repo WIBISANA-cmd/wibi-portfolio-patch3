@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getLandingPage } from './sanity.queries';
 import { applyFontTheme } from './fonts';
+import { applyTextSizes } from './textSizes';
 import type { LandingPage, ThemeSettingsDoc, TranslationDoc } from './sanity.types';
 
 interface LandingPageState {
@@ -26,6 +27,7 @@ export function useLandingPage(): LandingPageState {
         if (!active) return;
         // Set the font variables before the first content render — no font swap flash.
         applyFontTheme(result.theme);
+        applyTextSizes(result.theme);
         setData(result.page);
         setTranslations(result.translations ?? []);
         setTheme(result.theme ?? null);

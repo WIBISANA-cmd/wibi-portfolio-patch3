@@ -5,10 +5,15 @@ import {
   DEFAULT_FONTS,
   FONT_ROLES,
   FONT_ROLE_LABELS,
+  SIZE_DEFAULT,
+  SIZE_MAX,
+  SIZE_MIN,
   slotFieldName,
+  slotSizeFieldName,
   type FontRole,
 } from '../../src/lib/fontRegistry';
 import { FontSelectInput } from '../components/FontSelectInput';
+import { TextSizeInput } from '../components/TextSizeInput';
 
 /** Letters, numbers, spaces, dashes and underscores — safe inside a CSS font-family. */
 const FONT_NAME_PATTERN = /^[A-Za-z0-9][A-Za-z0-9 _-]*$/;
@@ -25,6 +30,20 @@ function contentFontField(slot: (typeof CONTENT_SLOTS)[number]) {
     group: 'fonts',
     fieldset: slot.group,
     components: { input: FontSelectInput },
+  });
+}
+
+/** One slider per piece of content. Empty / 100 = the design's own size. */
+function contentSizeField(slot: (typeof CONTENT_SLOTS)[number]) {
+  return defineField({
+    name: slotSizeFieldName(slot.key),
+    title: slot.label,
+    description: `${SIZE_DEFAULT}% = the design's size. Applies on every screen size.`,
+    type: 'number',
+    group: 'sizes',
+    fieldset: `size-${slot.group}`,
+    components: { input: TextSizeInput },
+    validation: (rule) => rule.min(SIZE_MIN).max(SIZE_MAX),
   });
 }
 
@@ -57,6 +76,7 @@ export default defineType({
   type: 'document',
   groups: [
     { name: 'fonts', title: 'Fonts', default: true },
+    { name: 'sizes', title: 'Text Sizes' },
     { name: 'custom', title: 'Custom Fonts' },
   ],
   fieldsets: [
@@ -65,10 +85,16 @@ export default defineType({
       title: group.title,
       options: { collapsible: true, collapsed: group.name !== 'hero' },
     })),
+    ...CONTENT_GROUPS.map((group) => ({
+      name: `size-${group.name}`,
+      title: group.title,
+      options: { collapsible: true, collapsed: group.name !== 'hero' },
+    })),
     { name: 'legacy', title: 'Base fonts (legacy)', options: { collapsible: true, collapsed: true } },
   ],
   fields: [
     ...CONTENT_SLOTS.map(contentFontField),
+    ...CONTENT_SLOTS.map(contentSizeField),
 
     legacyRoleField('body', 'bodyFont'),
     legacyRoleField('heading', 'headingFont'),

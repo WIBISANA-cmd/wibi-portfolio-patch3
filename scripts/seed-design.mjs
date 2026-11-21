@@ -60,6 +60,13 @@ const ID_ENTRIES = {
   "I'm currently open for new projects and collaborations. Let's create something amazing that drives results.":
     'Saat ini saya terbuka untuk proyek dan kolaborasi baru. Mari ciptakan sesuatu yang luar biasa dan berdampak.',
   'Close menu': 'Tutup menu',
+  // Headings of the downloadable CV
+  'Professional Summary': 'Ringkasan Profesional',
+  'Work Experience': 'Pengalaman Kerja',
+  Projects: 'Proyek',
+  Certifications: 'Sertifikasi',
+  Languages: 'Bahasa',
+  Link: 'Tautan',
 };
 
 async function main() {

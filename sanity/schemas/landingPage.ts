@@ -398,17 +398,24 @@ export default defineType({
     defineField({
       name: 'cv',
       title: 'CV / Resume Settings',
-      description: 'Configure the downloadable ATS-friendly CV. Data is pulled dynamically from other sections.',
+      description:
+        'The downloadable ATS-friendly CV mirrors the site: name, job title and summary come from the Hero and About sections, experience / skills / projects from their sections, and contact details from Contact. The fields below fill in anything those leave empty, and hold what only the CV has (phone, education, certifications, languages).',
       type: 'object',
       group: 'cv',
       options: { collapsible: true, collapsed: false },
       fields: [
-        defineField({ name: 'fullName', title: 'Full Name', type: 'string' }),
-        defineField({ name: 'jobTitle', title: 'Job Title / Headline', type: 'string' }),
+        defineField({ name: 'fullName', title: 'Full Name', description: 'Used only when the Hero "Name" is empty.', type: 'string' }),
+        defineField({ name: 'jobTitle', title: 'Job Title / Headline', description: 'Used only when the Hero role / title is empty.', type: 'string' }),
         defineField({ name: 'phone', title: 'Phone Number', type: 'string' }),
         defineField({ name: 'location', title: 'Location', type: 'string' }),
         defineField({ name: 'website', title: 'Website URL', type: 'string' }),
-        defineField({ name: 'summary', title: 'Professional Summary', type: 'text', rows: 4 }),
+        defineField({
+          name: 'summary',
+          title: 'Professional Summary',
+          description: 'Used only when the About text is empty — otherwise the CV shows the About text.',
+          type: 'text',
+          rows: 4,
+        }),
         defineField({
           name: 'education',
           title: 'Education',

@@ -6,10 +6,35 @@ import type {
   CVData,
 } from './sanity.types';
 
+/** Translate a UI string; identity when no dictionary is active. */
+type Translate = (text: string) => string;
+
+export interface CVOptions {
+  /** Same dictionary the site uses, so the CV follows the language the visitor picked. */
+  t?: Translate;
+  /** Active language code, written to <html lang>. */
+  lang?: string;
+}
+
+interface CVLabels {
+  summary: string;
+  experience: string;
+  education: string;
+  skills: string;
+  projects: string;
+  certifications: string;
+  languages: string;
+  link: string;
+}
+
 /**
  * Collect all CV data from the landing page object.
- * Skills, experiences, and projects come from their respective sections;
- * personal info, education, certifications, and languages come from the cv section.
+ *
+ * The CV mirrors what the site shows: name, title and summary come from the
+ * Hero / About sections, and the "CV / Resume Settings" values are only used
+ * when those are empty. Experience, skills and projects come from their own
+ * sections; contact details, education, certifications and languages from the
+ * contact and CV sections. `data` is already translated by the caller.
  */
 interface CVPayload {
   fullName: string;
@@ -26,28 +51,38 @@ interface CVPayload {
   certifications: NonNullable<CVData['certifications']>;
   languages: NonNullable<CVData['languages']>;
   socials: { label: string; url: string }[];
+  labels: CVLabels;
 }
 
-function collectCVData(data: LandingPage): CVPayload {
+/** Same ordering as the Skills section: categories in first-seen order, then `order` inside each. */
+function sortSkillsLikeSite(skills: SkillDoc[]): SkillDoc[] {
+  const firstSeen = new Map<string, number>();
+  skills.forEach((s, i) => !firstSeen.has(s.category) && firstSeen.set(s.category, i));
+  return [...skills].sort(
+    (a, b) => (firstSeen.get(a.category) ?? 0) - (firstSeen.get(b.category) ?? 0) || (a.order ?? 99) - (b.order ?? 99)
+  );
+}
+
+const oneLine = (text?: string) => text?.replace(/s+/g, ' ').trim() || '';
+
+function collectCVData(data: LandingPage, t: Translate): CVPayload {
   const cv = data.cv ?? {};
   const experiences = [...(data.experiences?.experiences ?? [])].sort(
     (a, b) => (a.order ?? 99) - (b.order ?? 99)
   );
-  const skills = [...(data.skills?.skills ?? [])].sort(
-    (a, b) => (a.order ?? 99) - (b.order ?? 99)
-  );
+  const skills = sortSkillsLikeSite(data.skills?.skills ?? []);
   const projects = [...(data.projects?.projects ?? [])].sort(
     (a, b) => (a.order ?? 99) - (b.order ?? 99)
   );
 
   return {
-    fullName: cv.fullName || data.preloader?.wordmark || 'Your Name',
-    jobTitle: cv.jobTitle || data.hero?.eyebrow || '',
+    fullName: oneLine(data.hero?.name) || cv.fullName || data.preloader?.wordmark || 'Your Name',
+    jobTitle: data.hero?.eyebrow || cv.jobTitle || '',
     email: data.contact?.email || '',
     phone: cv.phone || '',
     location: cv.location || '',
     website: cv.website || '',
-    summary: cv.summary || data.about?.body || '',
+    summary: data.about?.body || cv.summary || '',
     experiences,
     skills,
     projects,
@@ -55,6 +90,17 @@ function collectCVData(data: LandingPage): CVPayload {
     certifications: cv.certifications ?? [],
     languages: cv.languages ?? [],
     socials: data.contact?.socials ?? [],
+    labels: {
+      summary: t('Professional Summary'),
+      // Headings the site sets itself win, so the CV reads like the page.
+      experience: data.experiences?.heading || t('Work Experience'),
+      education: data.skills?.educationHeading || t('Education'),
+      skills: data.skills?.skillsHeading || t('Skills'),
+      projects: data.projects?.heading || t('Projects'),
+      certifications: t('Certifications'),
+      languages: t('Languages'),
+      link: t('Link'),
+    },
   };
 }
 
@@ -82,7 +128,8 @@ function escapeHtml(str: string): string {
  * Uses semantic HTML, simple styling, and avoids tables/graphics
  * so Applicant Tracking Systems can parse it correctly.
  */
-function buildATSHtml(d: CVPayload): string {
+function buildATSHtml(d: CVPayload, lang: string): string {
+  const L = d.labels;
   const contactParts: string[] = [];
   if (d.email) contactParts.push(`<a href="mailto:${escapeHtml(d.email)}">${escapeHtml(d.email)}</a>`);
   if (d.phone) contactParts.push(escapeHtml(d.phone));
@@ -95,7 +142,7 @@ function buildATSHtml(d: CVPayload): string {
   const skillGroups = groupSkills(d.skills);
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${escapeHtml(lang)}">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -197,7 +244,7 @@ function buildATSHtml(d: CVPayload): string {
 ${d.summary ? `
 <!-- PROFESSIONAL SUMMARY -->
 <section>
-  <h2>Professional Summary</h2>
+  <h2>${escapeHtml(L.summary)}</h2>
   <p>${escapeHtml(d.summary)}</p>
 </section>
 ` : ''}
@@ -205,7 +252,7 @@ ${d.summary ? `
 ${d.experiences.length > 0 ? `
 <!-- WORK EXPERIENCE -->
 <section>
-  <h2>Work Experience</h2>
+  <h2>${escapeHtml(L.experience)}</h2>
   ${d.experiences.map(exp => `
   <div class="entry">
     <div class="entry-header">
@@ -220,7 +267,7 @@ ${d.experiences.length > 0 ? `
 ${d.education.length > 0 ? `
 <!-- EDUCATION -->
 <section>
-  <h2>Education</h2>
+  <h2>${escapeHtml(L.education)}</h2>
   ${d.education.map(edu => `
   <div class="entry">
     <div class="entry-header">
@@ -235,7 +282,7 @@ ${d.education.length > 0 ? `
 ${d.skills.length > 0 ? `
 <!-- SKILLS -->
 <section>
-  <h2>Skills</h2>
+  <h2>${escapeHtml(L.skills)}</h2>
   ${Array.from(skillGroups.entries()).map(([cat, names]) => `
   <div class="skills-group">
     <strong>${escapeHtml(cat)}:</strong> <span>${names.map(n => escapeHtml(n)).join(', ')}</span>
@@ -246,13 +293,13 @@ ${d.skills.length > 0 ? `
 ${d.projects.length > 0 ? `
 <!-- PROJECTS -->
 <section>
-  <h2>Projects</h2>
+  <h2>${escapeHtml(L.projects)}</h2>
   <div class="projects-grid">
     ${d.projects.map(proj => `
     <div class="entry">
       <div class="entry-header">
-        <h3>${escapeHtml(proj.title)}${proj.techstack && proj.techstack.length > 0 ? ` <span style="font-weight:400;color:#666;font-size:9.5pt">(${proj.techstack.map(t => escapeHtml(t)).join(', ')})</span>` : ''}</h3>
-        ${proj.url ? `<a href="${escapeHtml(proj.url)}" style="font-size:9.5pt;color:#666;">↗ Link</a>` : ''}
+        <h3>${escapeHtml(proj.title)}${proj.category ? ` <span style="font-weight:400;color:#666;font-size:9.5pt">· ${escapeHtml(proj.category)}</span>` : ''}${proj.techstack && proj.techstack.length > 0 ? ` <span style="font-weight:400;color:#666;font-size:9.5pt">(${proj.techstack.map(t => escapeHtml(t)).join(', ')})</span>` : ''}</h3>
+        ${proj.url ? `<a href="${escapeHtml(proj.url)}" style="font-size:9.5pt;color:#666;">↗ ${escapeHtml(L.link)}</a>` : ''}
       </div>
       ${proj.description ? `<p>${escapeHtml(proj.description)}</p>` : ''}
     </div>`).join('')}
@@ -263,7 +310,7 @@ ${d.projects.length > 0 ? `
 ${d.certifications.length > 0 ? `
 <!-- CERTIFICATIONS -->
 <section>
-  <h2>Certifications</h2>
+  <h2>${escapeHtml(L.certifications)}</h2>
   ${d.certifications.map(cert => `
   <div class="entry">
     <div class="entry-header">
@@ -278,7 +325,7 @@ ${d.certifications.length > 0 ? `
 ${d.languages.length > 0 ? `
 <!-- LANGUAGES -->
 <section>
-  <h2>Languages</h2>
+  <h2>${escapeHtml(L.languages)}</h2>
   <p>${d.languages.map(l => `${escapeHtml(l.language || '')}${l.level ? ` (${escapeHtml(l.level)})` : ''}`).join(', ')}</p>
 </section>
 ` : ''}
@@ -291,9 +338,9 @@ ${d.languages.length > 0 ? `
  * Opens the generated ATS-friendly CV in a new browser tab and triggers
  * the print dialog so the user can save it as PDF.
  */
-export function downloadCV(data: LandingPage): void {
-  const payload = collectCVData(data);
-  const html = buildATSHtml(payload);
+export function downloadCV(data: LandingPage, { t = (text) => text, lang = 'en' }: CVOptions = {}): void {
+  const payload = collectCVData(data, t);
+  const html = buildATSHtml(payload, lang);
 
   const blob = new Blob([html], { type: 'text/html' });
   const url = URL.createObjectURL(blob);

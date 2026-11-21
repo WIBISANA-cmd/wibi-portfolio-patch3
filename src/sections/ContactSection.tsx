@@ -60,7 +60,7 @@ export default function ContactSection({ page }: { page: LandingPage }) {
                 <Sparkle className="inline-block w-6 h-6 ml-3 -translate-y-1 text-accent-text align-middle" />
               </h2>
             )}
-            {contact.note && <p className="font-contact-text text-sm sm:text-[0.95rem] text-ink-2 leading-relaxed max-w-sm whitespace-pre-line">{contact.note}</p>}
+            {contact.note && <p className="font-contact-text text-sm sm:fs-[0.95rem] text-ink-2 leading-relaxed max-w-sm whitespace-pre-line">{contact.note}</p>}
 
             <div className="flex flex-wrap items-center gap-x-6 gap-y-4 pt-2">
               {availability && contact.email && (

@@ -53,7 +53,7 @@ function Stat({ value, label }: { value: string; label: string }) {
       <span className="font-hero-stat-number text-4xl sm:text-5xl leading-none text-accent-text tracking-tight min-w-[3.25rem]">
         {value}
       </span>
-      <span className="font-hero-stat-label text-[11px] sm:text-xs font-medium uppercase tracking-[0.08em] text-ink-2 leading-snug max-w-[9rem]">
+      <span className="font-hero-stat-label fs-[11px] sm:text-xs font-medium uppercase tracking-[0.08em] text-ink-2 leading-snug max-w-[9rem]">
         {label}
       </span>
     </div>
@@ -116,7 +116,13 @@ export default function HeroSection({ data, stats = [], fallbackName, ready = tr
             <span
               ref={textRef}
               className="hero-word block w-max mx-auto font-hero-word uppercase leading-[0.82] tracking-[-0.01em] whitespace-nowrap"
-              style={{ fontSize: size ? `${size}px` : '22vw', visibility: size ? 'visible' : 'hidden' }}
+              style={{
+                // `size` is the width-fitting size; the Sanity "Text size" (--ts, from
+                // the font-hero-word class) scales it. The fit measures width ÷ font-size,
+                // which doesn't change with the scale, so the two never fight.
+                fontSize: `calc(${size ? `${size}px` : '22vw'} * var(--ts, 1))`,
+                visibility: size ? 'visible' : 'hidden',
+              }}
             >
               {word}
             </span>
@@ -155,7 +161,7 @@ export default function HeroSection({ data, stats = [], fallbackName, ready = tr
             {name && (
               <h1
                 data-hero-item
-                className="font-hero-name uppercase text-ink leading-[0.9] tracking-[-0.005em] text-[3.6rem] sm:text-7xl xl:text-[6.25rem] whitespace-pre-line break-words max-w-full"
+                className="font-hero-name uppercase text-ink leading-[0.9] tracking-[-0.005em] fs-[3.6rem] sm:text-7xl xl:fs-[6.25rem] whitespace-pre-line break-words max-w-full"
               >
                 {name}
               </h1>
@@ -166,7 +172,7 @@ export default function HeroSection({ data, stats = [], fallbackName, ready = tr
               </p>
             )}
             {intro && (
-              <p data-hero-item className="font-hero-intro text-ink-2 text-sm sm:text-[0.95rem] leading-relaxed max-w-sm">
+              <p data-hero-item className="font-hero-intro text-ink-2 text-sm sm:fs-[0.95rem] leading-relaxed max-w-sm">
                 {intro}
               </p>
             )}
@@ -183,7 +189,7 @@ export default function HeroSection({ data, stats = [], fallbackName, ready = tr
               </a>
             )}
             {data.locationNote && (
-              <p data-hero-item className="inline-flex items-center gap-2.5 font-hero-tagline text-[11px] sm:text-xs font-medium uppercase tracking-[0.1em] text-ink">
+              <p data-hero-item className="inline-flex items-center gap-2.5 font-hero-tagline fs-[11px] sm:text-xs font-medium uppercase tracking-[0.1em] text-ink">
                 <Globe className="w-4 h-4 text-accent-text" strokeWidth={1.5} aria-hidden="true" />
                 {data.locationNote}
               </p>

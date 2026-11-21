@@ -25,7 +25,7 @@ export default function ExperienceSection({ data }: { data: ExperiencesData }) {
                   </div>
                   <h3 className="font-experience-role mt-2 text-base font-bold uppercase tracking-tight text-ink leading-snug">{exp.role}</h3>
                   <p className="text-sm text-muted">{exp.company}</p>
-                  {exp.description && <p className="text-[0.85rem] text-ink-2 leading-relaxed">{exp.description}</p>}
+                  {exp.description && <p className="fs-[0.85rem] text-ink-2 leading-relaxed">{exp.description}</p>}
                 </article>
               </Reveal>
             </li>

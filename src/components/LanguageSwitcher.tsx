@@ -20,7 +20,7 @@ export default function LanguageSwitcher({ className = '' }: { className?: strin
             onClick={() => setLang(option.code)}
             title={option.label}
             aria-pressed={active}
-            className={`h-full px-2.5 rounded-full text-[11px] font-semibold uppercase tracking-wide transition-colors ${
+            className={`h-full px-2.5 rounded-full fs-[11px] font-semibold uppercase tracking-wide transition-colors ${
               active ? 'bg-accent text-on-accent' : 'text-ink-2 hover:text-accent-text'
             }`}
           >
