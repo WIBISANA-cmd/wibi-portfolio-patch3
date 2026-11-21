@@ -97,5 +97,5 @@ export function ArrowAction({
 
 /** Page container with the design's side gutters. */
 export function Container({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`max-w-page mx-auto px-4 sm:px-8 lg:px-12 ${className}`}>{children}</div>;
+  return <div className={`max-w-page mx-auto px-4 sm:px-8 lg:px-12 2xl:px-16 ${className}`}>{children}</div>;
 }

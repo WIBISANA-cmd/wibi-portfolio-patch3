@@ -37,7 +37,7 @@ export default {
         ...contentFonts,
       },
       maxWidth: {
-        page: '1440px',
+        page: '2560px',
       },
     },
   },

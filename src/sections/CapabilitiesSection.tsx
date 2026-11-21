@@ -175,7 +175,7 @@ export default function CapabilitiesSection({
 
   return (
     <section id="skills" className="border-b border-accent-line">
-      <div className={`max-w-page mx-auto px-4 sm:px-8 lg:pl-12 ${hasQuote ? 'lg:pr-0' : 'lg:pr-12'}`}>
+      <div className={`max-w-page mx-auto px-4 sm:px-8 lg:pl-12 2xl:pl-16 ${hasQuote ? 'lg:pr-0' : 'lg:pr-12 2xl:pr-16'}`}>
         <Reveal yOffset={24}>
           <div className={`grid grid-cols-1 ${cols}`}>
             <EducationSkills skills={skills} cv={cv} />

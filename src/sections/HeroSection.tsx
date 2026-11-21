@@ -14,7 +14,7 @@ interface HeroSectionProps {
 }
 
 /** Scale a single-line word so it spans its container's full width. */
-function useFitText(text: string | undefined, max = 420) {
+function useFitText(text: string | undefined, max = 720) {
   const boxRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
   const [size, setSize] = useState<number | null>(null);
@@ -109,7 +109,7 @@ export default function HeroSection({ data, stats = [], fallbackName, ready = tr
       className="relative overflow-hidden border-b border-accent-line"
       style={{ backgroundImage: 'var(--hero-glow)' }}
     >
-      <div className="relative max-w-page mx-auto px-4 sm:px-8 lg:px-12 pt-20 sm:pt-24 lg:min-h-[max(100svh,820px)]">
+      <div className="relative max-w-page mx-auto px-4 sm:px-8 lg:px-12 2xl:px-16 pt-20 sm:pt-24 lg:min-h-[max(100svh,820px)]">
         {/* Background word */}
         {word && (
           <div ref={boxRef} aria-hidden="true" className="relative w-full pointer-events-none select-none" data-hero-word>
@@ -126,7 +126,7 @@ export default function HeroSection({ data, stats = [], fallbackName, ready = tr
         {/* Content — stacked on mobile; on desktop the portrait and both text
             columns are pinned to the bottom of a full-height stage. */}
         <div
-          className={`grid grid-cols-1 lg:grid-cols-12 gap-x-6 lg:absolute lg:inset-x-12 lg:bottom-0 lg:top-20 lg:items-end ${
+          className={`grid grid-cols-1 lg:grid-cols-12 gap-x-6 lg:absolute lg:inset-x-12 2xl:inset-x-16 lg:bottom-0 lg:top-20 lg:items-end ${
             word ? '-mt-[14vw] sm:-mt-[12vw] lg:mt-0' : 'pt-8 lg:pt-0'
           }`}
         >

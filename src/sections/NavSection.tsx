@@ -63,7 +63,7 @@ export default function NavSection({ label, sublabel, availability, links = [], 
         solid ? 'bg-bg/90 backdrop-blur-md' : 'bg-transparent'
       }`}
     >
-      <div className="max-w-page mx-auto px-4 sm:px-8 lg:px-12">
+      <div className="max-w-page mx-auto px-4 sm:px-8 lg:px-12 2xl:px-16">
         <div className={`flex items-center justify-between gap-4 h-16 sm:h-20 border-b transition-colors ${solid ? 'border-accent-line' : 'border-transparent'}`}>
           <a href="#top" className="flex items-center gap-3 min-w-0">
             {logoUrl && (
