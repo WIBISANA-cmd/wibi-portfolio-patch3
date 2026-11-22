@@ -187,13 +187,36 @@ export function findSlotByField(fieldName?: string): ContentSlot | undefined {
 
 /**
  * Text size is a percentage of the design's own size for that content
- * (100 = unchanged). It is a multiplier, so the responsive steps of the design
- * (phone → desktop) are kept — every breakpoint just grows or shrinks together.
+ * (100 = unchanged). Editors can customize sizes globally per screen size
+ * (Desktop, Tablet, Mobile) and/or per individual content slot.
  */
 export const SIZE_DEFAULT = 100;
 export const SIZE_MIN = 40;
 export const SIZE_MAX = 300;
 export const SIZE_STEP = 5;
+
+export type ScreenDevice = 'desktop' | 'tablet' | 'mobile';
+
+export interface ResponsiveSlotSize {
+  desktop?: number;
+  tablet?: number;
+  mobile?: number;
+}
+
+export type SlotSizeValue = number | ResponsiveSlotSize;
+
+export const DEFAULT_BREAKPOINTS = {
+  mobile: 768,
+  tablet: 1024,
+  desktop: 1280,
+  pageMax: 2560,
+} as const;
+
+export const DEFAULT_GLOBAL_SCALES = {
+  desktop: 100,
+  tablet: 100,
+  mobile: 100,
+} as const;
 
 /** `heroName` → `heroNameSize` (the Sanity field name) */
 export const slotSizeFieldName = (key: string) => `${key}Size`;

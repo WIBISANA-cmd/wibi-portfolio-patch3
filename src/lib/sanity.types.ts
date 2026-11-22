@@ -60,12 +60,28 @@ export interface CustomFontDoc {
   extension?: string;
 }
 
+export interface ResponsiveSizeValue {
+  desktop?: number;
+  tablet?: number;
+  mobile?: number;
+}
+
 export interface ThemeSettingsDoc {
   bodyFont?: string;
   headingFont?: string;
   displayFont?: string;
   scriptFont?: string;
   customFonts?: CustomFontDoc[];
+  /** Custom screen breakpoints (px) */
+  screenMobile?: number;
+  screenTablet?: number;
+  maxPageWidth?: number;
+  /** Global text size scaling (%) per screen size */
+  globalScaleDesktop?: number;
+  globalScaleTablet?: number;
+  globalScaleMobile?: number;
+  /** Per-slot text sizes (number or responsive object) */
+  [key: string]: unknown;
 }
 
 export interface TranslationDoc {

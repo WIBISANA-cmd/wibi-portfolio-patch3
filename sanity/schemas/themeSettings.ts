@@ -2,7 +2,9 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 import {
   CONTENT_GROUPS,
   CONTENT_SLOTS,
+  DEFAULT_BREAKPOINTS,
   DEFAULT_FONTS,
+  DEFAULT_GLOBAL_SCALES,
   FONT_ROLES,
   FONT_ROLE_LABELS,
   SIZE_DEFAULT,
@@ -33,17 +35,36 @@ function contentFontField(slot: (typeof CONTENT_SLOTS)[number]) {
   });
 }
 
-/** One slider per piece of content. Empty / 100 = the design's own size. */
+/** Responsive size configuration per piece of content (Desktop, Tablet, Mobile). */
 function contentSizeField(slot: (typeof CONTENT_SLOTS)[number]) {
   return defineField({
     name: slotSizeFieldName(slot.key),
     title: slot.label,
-    description: `${SIZE_DEFAULT}% = the design's size. Applies on every screen size.`,
-    type: 'number',
+    description: `Adjust text size across Desktop, Tablet, and Mobile. Inherits down: Mobile → Tablet → Desktop (${SIZE_DEFAULT}%).`,
+    type: 'object',
     group: 'sizes',
     fieldset: `size-${slot.group}`,
     components: { input: TextSizeInput },
-    validation: (rule) => rule.min(SIZE_MIN).max(SIZE_MAX),
+    fields: [
+      defineField({
+        name: 'desktop',
+        title: 'Desktop Size (%)',
+        type: 'number',
+        validation: (rule) => rule.min(SIZE_MIN).max(SIZE_MAX),
+      }),
+      defineField({
+        name: 'tablet',
+        title: 'Tablet Size (%)',
+        type: 'number',
+        validation: (rule) => rule.min(SIZE_MIN).max(SIZE_MAX),
+      }),
+      defineField({
+        name: 'mobile',
+        title: 'Mobile Size (%)',
+        type: 'number',
+        validation: (rule) => rule.min(SIZE_MIN).max(SIZE_MAX),
+      }),
+    ],
   });
 }
 
@@ -76,10 +97,21 @@ export default defineType({
   type: 'document',
   groups: [
     { name: 'fonts', title: 'Fonts', default: true },
-    { name: 'sizes', title: 'Text Sizes' },
+    { name: 'screens', title: 'Screen Sizes (Ukuran Layar)' },
+    { name: 'sizes', title: 'Text Sizes (Ukuran Teks)' },
     { name: 'custom', title: 'Custom Fonts' },
   ],
   fieldsets: [
+    {
+      name: 'screen-breakpoints',
+      title: 'Screen Size Breakpoints (Ukuran Layar & Breakpoint)',
+      options: { collapsible: true, collapsed: false },
+    },
+    {
+      name: 'screen-global-scale',
+      title: 'Global Text Scale (Skala Teks Global per Layar)',
+      options: { collapsible: true, collapsed: false },
+    },
     ...CONTENT_GROUPS.map((group) => ({
       name: group.name,
       title: group.title,
@@ -93,6 +125,89 @@ export default defineType({
     { name: 'legacy', title: 'Base fonts (legacy)', options: { collapsible: true, collapsed: true } },
   ],
   fields: [
+    // Screen Breakpoint Settings (custom screen sizes)
+    defineField({
+      name: 'screenMobile',
+      title: 'Mobile Max Width (px)',
+      description:
+        'Layar dengan lebar ≤ nilai ini dianggap sebagai layar Mobile. Default: 768px (rentang 320px - 900px).',
+      type: 'number',
+      group: ['screens', 'sizes'],
+      fieldset: 'screen-breakpoints',
+      initialValue: DEFAULT_BREAKPOINTS.mobile,
+      validation: (rule) => rule.min(320).max(900).integer(),
+    }),
+    defineField({
+      name: 'screenTablet',
+      title: 'Tablet Max Width (px)',
+      description:
+        'Layar dengan lebar ≤ nilai ini (dan di atas Mobile) dianggap Tablet. Default: 1024px (rentang 641px - 1440px). Layar di atas Tablet adalah Desktop.',
+      type: 'number',
+      group: ['screens', 'sizes'],
+      fieldset: 'screen-breakpoints',
+      initialValue: DEFAULT_BREAKPOINTS.tablet,
+      validation: (rule) =>
+        rule
+          .min(641)
+          .max(1440)
+          .integer()
+          .custom((tablet, context) => {
+            const doc = context.document as Record<string, unknown> | undefined;
+            const mobile = (doc?.screenMobile as number) ?? DEFAULT_BREAKPOINTS.mobile;
+            if (tablet && tablet <= mobile) {
+              return `Tablet breakpoint (${tablet}px) harus lebih besar dari Mobile breakpoint (${mobile}px).`;
+            }
+            return true;
+          }),
+    }),
+    defineField({
+      name: 'maxPageWidth',
+      title: 'Page Container Max Width (px)',
+      description:
+        'Batas lebar maksimal keseluruhan kontainer halaman (default: 2560px, rentang 1024px - 3840px).',
+      type: 'number',
+      group: ['screens', 'sizes'],
+      fieldset: 'screen-breakpoints',
+      initialValue: DEFAULT_BREAKPOINTS.pageMax,
+      validation: (rule) => rule.min(1024).max(3840).integer(),
+    }),
+
+    // Global Text Scaling per Screen Size
+    defineField({
+      name: 'globalScaleDesktop',
+      title: 'Global Desktop Text Scale (%)',
+      description:
+        'Skala pengali teks global untuk layar Desktop (> Tablet breakpoint). 100% = normal (rentang 50% - 200%).',
+      type: 'number',
+      group: ['screens', 'sizes'],
+      fieldset: 'screen-global-scale',
+      initialValue: DEFAULT_GLOBAL_SCALES.desktop,
+      validation: (rule) => rule.min(50).max(200),
+    }),
+    defineField({
+      name: 'globalScaleTablet',
+      title: 'Global Tablet Text Scale (%)',
+      description:
+        'Skala pengali teks global untuk layar Tablet (≤ Tablet breakpoint). 100% = normal (rentang 50% - 200%).',
+      type: 'number',
+      group: ['screens', 'sizes'],
+      fieldset: 'screen-global-scale',
+      initialValue: DEFAULT_GLOBAL_SCALES.tablet,
+      validation: (rule) => rule.min(50).max(200),
+    }),
+    defineField({
+      name: 'globalScaleMobile',
+      title: 'Global Mobile Text Scale (%)',
+      description:
+        'Skala pengali teks global untuk layar Mobile (≤ Mobile breakpoint). 100% = normal (rentang 50% - 200%).',
+      type: 'number',
+      group: ['screens', 'sizes'],
+      fieldset: 'screen-global-scale',
+      initialValue: DEFAULT_GLOBAL_SCALES.mobile,
+      validation: (rule) => rule.min(50).max(200),
+    }),
+
+    // Per-content font and responsive size fields
     ...CONTENT_SLOTS.map(contentFontField),
     ...CONTENT_SLOTS.map(contentSizeField),
 
@@ -161,10 +276,18 @@ export default defineType({
             }),
           ],
           preview: {
-            select: { title: 'fontName', weight: 'weight', style: 'style', usage: 'usage', file: 'fontFile.asset.originalFilename' },
+            select: {
+              title: 'fontName',
+              weight: 'weight',
+              style: 'style',
+              usage: 'usage',
+              file: 'fontFile.asset.originalFilename',
+            },
             prepare: ({ title, weight, style, usage, file }) => ({
               title: `${title || 'Untitled font'} · ${weight ?? 400}${style === 'italic' ? ' italic' : ''}`,
-              subtitle: [usage?.length ? `Used for: ${usage.join(', ')}` : 'Not applied', file].filter(Boolean).join(' — '),
+              subtitle: [usage?.length ? `Used for: ${usage.join(', ')}` : 'Not applied', file]
+                .filter(Boolean)
+                .join(' — '),
             }),
           },
         }),
@@ -175,7 +298,9 @@ export default defineType({
           if (!value?.length) return true;
           for (const role of FONT_ROLES) {
             const families = new Set(
-              value.filter((f) => f.usage?.includes(role) && f.fontName).map((f) => f.fontName!.trim().toLowerCase())
+              value
+                .filter((f) => f.usage?.includes(role) && f.fontName)
+                .map((f) => f.fontName!.trim().toLowerCase())
             );
             if (families.size > 1) {
               return `Only one custom font family can be used for "${FONT_ROLE_LABELS[role]}".`;
@@ -186,10 +311,16 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { name: 'heroNameFont', title: 'sectionTitleFont', custom: 'customFonts' },
-    prepare: ({ name, title, custom }) => ({
+    select: {
+      name: 'heroNameFont',
+      title: 'sectionTitleFont',
+      custom: 'customFonts',
+      mobile: 'screenMobile',
+      tablet: 'screenTablet',
+    },
+    prepare: ({ name, title, custom, mobile, tablet }) => ({
       title: 'Theme Settings',
-      subtitle: `Hero name: ${name || DEFAULT_FONTS.display} · Section titles: ${title || DEFAULT_FONTS.heading} · ${custom?.length ?? 0} custom font(s)`,
+      subtitle: `Screen: M ≤ ${mobile ?? 768}px · T ≤ ${tablet ?? 1024}px · ${custom?.length ?? 0} custom font(s)`,
     }),
   },
 });

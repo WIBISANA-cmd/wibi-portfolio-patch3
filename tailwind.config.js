@@ -68,7 +68,7 @@ export default {
         ...contentFonts,
       },
       maxWidth: {
-        page: '2560px',
+        page: 'var(--max-page-width, 2560px)',
       },
     },
   },
